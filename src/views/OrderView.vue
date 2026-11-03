@@ -20,6 +20,7 @@ const customerName = ref('')
 const address = ref('')
 const saving = ref(false)
 const confirmationVisible = ref(false)
+const paymentConfirmed = ref(false)
 const successVisible = ref(false)
 const mySalesTotalCents = ref<number | null>(null)
 const mySalesOrders = ref<MySaleOrder[]>([])
@@ -112,12 +113,15 @@ function formatDate(value: string): string {
 }
 
 function requestOrderConfirmation(): void {
-  if (customerName.value.trim() && orderIsValid.value) confirmationVisible.value = true
+  if (customerName.value.trim() && orderIsValid.value) {
+    paymentConfirmed.value = false
+    confirmationVisible.value = true
+  }
 }
 
 async function confirmOrder(): Promise<void> {
   const buyer = customerName.value.trim()
-  if (!buyer || !orderIsValid.value) return
+  if (!buyer || !orderIsValid.value || !paymentConfirmed.value) return
   saving.value = true
   try {
     await submitOrder(buyer, address.value, counts)
@@ -350,6 +354,12 @@ onMounted(() => void loadMySalesTotal())
         <div v-if="discountCents > 0" class="confirm-discount"><span>Korting inbegrepen</span><strong>− {{ formatCurrency(discountCents) }}</strong></div>
         <div class="confirm-order-total"><span>Totaal</span><strong>{{ formatCurrency(totalCents) }}</strong></div>
       </div>
+      <label class="payment-confirmation" for="payment-confirmed">
+        <input id="payment-confirmed" v-model="paymentConfirmed" type="checkbox" />
+        <span>
+          Ik ga akkoord met het totaalbedrag en regel de betaling rechtstreeks met de koper.
+        </span>
+      </label>
       <p class="muted">Na opslaan telt deze verkoop direct mee in jouw totaal en de tussenstand.</p>
     </div>
     <template #footer>
@@ -358,6 +368,7 @@ onMounted(() => void loadMySalesTotal())
         label="Ja, bestelling opslaan"
         icon="pi pi-check"
         :loading="saving"
+        :disabled="!paymentConfirmed"
         @click="confirmOrder"
       />
     </template>

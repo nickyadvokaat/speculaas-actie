@@ -35,7 +35,7 @@ onMounted(() => void load())
             <h2>De tussenstand</h2>
             <p class="muted">Totale verkoopopbrengst per verkoper. Iedere bestelling telt meteen mee; geannuleerde bestellingen niet.</p>
           </div>
-          <Button label="Vernieuwen" icon="pi pi-refresh" severity="secondary" outlined @click="load" />
+          <Button class="leaderboard-refresh" label="Vernieuwen" icon="pi pi-refresh" severity="secondary" outlined @click="load" />
         </div>
         <Message v-if="errorMessage" severity="warn" :closable="false">
           {{ errorMessage }}
