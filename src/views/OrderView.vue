@@ -50,19 +50,19 @@ const productGroups = [
   {
     title: 'Speculaaspoppen',
     description: '500 gram · € 7,00 per stuk',
-    items: [{ key: 'speculaaspoppen', label: 'Speculaaspop', price: '€ 7,00 per stuk', image: 'speculaaspop.svg' }],
+    items: [{ key: 'speculaaspoppen', label: 'Speculaaspop', price: '€ 7,00 per stuk', image: 'speculaaspop-waterpolo.png' }],
   },
   {
     title: 'Gewone stroopwafels',
     description: '10 stuks per pakje · 1 voor € 3,30 · 3 voor € 9,00',
-    items: [{ key: 'stroopwafels', label: 'Pakje gewone stroopwafels', price: '3 voor € 9,00', image: 'stroopwafels.svg' }],
+    items: [{ key: 'stroopwafels', label: 'Pakje gewone stroopwafels', price: '3 voor € 9,00', image: 'stroopwafels.png' }],
   },
   {
     title: 'Speciale stroopwafels',
     description: 'Glutenvrij en lactosevrij combineren voor de staffelkorting',
     items: [
-      { key: 'glutenvrij', label: 'Pakje glutenvrije stroopwafels', price: '€ 4,60 per pakje', image: 'glutenvrij.svg' },
-      { key: 'lactosevrij', label: 'Pakje lactosevrije stroopwafels', price: '€ 4,60 per pakje', image: 'lactosevrij.svg' },
+      { key: 'glutenvrij', label: 'Pakje glutenvrije stroopwafels', price: '€ 4,60 per pakje', image: 'stroopwafels-glutenvrij.png' },
+      { key: 'lactosevrij', label: 'Pakje lactosevrije stroopwafels', price: '€ 4,60 per pakje', image: 'stroopwafels-lactosevrij.png' },
     ],
   },
 ] as const

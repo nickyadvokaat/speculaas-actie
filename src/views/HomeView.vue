@@ -140,7 +140,7 @@ async function signInWithTestPassword(): Promise<void> {
       <div class="art-card">
         <span class="art-label">Samen sterk</span>
         <strong>Een bestelling<br />voor de club</strong>
-        <img class="art-product-icon" :src="`${baseUrl}products/speculaaspop.svg`" alt="" />
+        <img class="art-product-icon" :src="`${baseUrl}products/speculaaspop-waterpolo.png`" alt="" />
         <span class="art-footer">Speculaasactie 2026</span>
       </div>
       <div class="floating-price">€ 7,-<small>speculaaspop</small></div>
@@ -159,22 +159,22 @@ async function signInWithTestPassword(): Promise<void> {
     </div>
     <div class="product-cards">
       <article class="product-card">
-        <img class="product-art" :src="`${baseUrl}products/speculaaspop.svg`" alt="" />
+        <img class="product-art" :src="`${baseUrl}products/speculaaspop-waterpolo.png`" alt="" />
         <div><h3>Speculaaspop</h3><p>Ambachtelijk en 500 gram</p></div>
         <strong>€ 7,00</strong>
       </article>
       <article class="product-card">
-        <img class="product-art" :src="`${baseUrl}products/stroopwafels.svg`" alt="" />
+        <img class="product-art" :src="`${baseUrl}products/stroopwafels.png`" alt="" />
         <div><h3>Stroopwafels</h3><p>10 stuks per pakje · 3 voor € 9,-</p></div>
         <strong>v.a. € 3,30</strong>
       </article>
       <article class="product-card">
-        <img class="product-art" :src="`${baseUrl}products/glutenvrij.svg`" alt="" />
+        <img class="product-art" :src="`${baseUrl}products/stroopwafels-glutenvrij.png`" alt="" />
         <div><h3>Glutenvrij</h3><p>3 pakjes glutenvrij/lactosevrij samen voor € 12,50</p></div>
         <strong>€ 4,60</strong>
       </article>
       <article class="product-card">
-        <img class="product-art" :src="`${baseUrl}products/lactosevrij.svg`" alt="" />
+        <img class="product-art" :src="`${baseUrl}products/stroopwafels-lactosevrij.png`" alt="" />
         <div><h3>Lactosevrij</h3><p>Combineren · 3 pakjes voor € 12,50</p></div>
         <strong>€ 4,60</strong>
       </article>

@@ -297,15 +297,17 @@ input[type='checkbox'] { accent-color: var(--forest); }
 .group-heading h3 { margin: 0 0 5px; font: 700 14px 'Manrope', sans-serif; }
 .group-heading p { margin: 0; color: var(--muted); font-size: 11px; }
 .product-quantity-list { margin-top: 13px; }
-.quantity-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 13px 0; }
+.quantity-row { display: grid; grid-template-columns: 52px minmax(0, 1fr) 145px; align-items: center; gap: 15px; padding: 13px 0; }
 .quantity-row + .quantity-row { border-top: 1px dashed #e8dccb; }
 .quantity-product-art { display: block; width: 52px; height: 52px; flex: 0 0 auto; border-radius: 13px; }
-.quantity-product-copy { flex: 1; }
+.quantity-product-copy { flex: 1; min-width: 0; }
 .quantity-row strong { display: block; font-size: 12px; }
 .quantity-row small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
 .p-inputnumber .p-inputnumber-input { text-align: center; }
 .quantity-row .p-inputnumber-button { background: #f4ecdf; border-color: #e5d7c4; color: var(--forest); }
-.quantity-row .p-inputnumber { width: 145px; }
+.quantity-row .p-inputnumber { display: flex; width: 100%; min-width: 0; }
+.quantity-row .p-inputnumber-input { flex: 1 1 0; width: 0; min-width: 0; }
+.quantity-row .p-inputnumber-button { flex: 0 0 36px; width: 36px; min-width: 0; padding-inline: 0; }
 .summary-card { position: sticky; top: 18px; }
 .summary-card .p-card-title { display: block; font: 800 18px 'Manrope', sans-serif; }
 .summary-lines { display: grid; gap: 12px; min-height: 28px; }
@@ -452,7 +454,7 @@ input[type='checkbox'] { accent-color: var(--forest); }
   .side-card h3 { font-size: 18px; }
   .form-grid { grid-template-columns: 1fr; }
   .order-layout { grid-template-columns: 1fr; }
-  .quantity-row { gap: 10px; }
+  .quantity-row { grid-template-columns: 44px minmax(0, 1fr) 120px; gap: 10px; }
   .quantity-product-art { width: 44px; height: 44px; }
   .order-summary { order: -1; }
   .summary-card { position: static; }
