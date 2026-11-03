@@ -51,9 +51,10 @@ and variables → Actions → Variables** de volgende repository variables toe:
 - `VITE_SUPABASE_ANON_KEY`
 
 In Supabase Auth voeg je ook de GitHub Pages URL toe aan de toegestane
-redirect-URL's, bijvoorbeeld
-`https://nickyadvokaat.github.io/speculaas-actie/#/profiel`. Gebruik de
-daadwerkelijke Pages-URL van de repository.
+redirect-URL's, zonder `#`-fragment, bijvoorbeeld
+`https://nickyadvokaat.github.io/speculaas-actie/`. Gebruik de daadwerkelijke
+Pages-URL van de repository. De app gebruikt PKCE en stuurt gebruikers na het
+verifiëren van de magic link zelf door naar hun profiel.
 
 ## Eerste-versiegedrag
 

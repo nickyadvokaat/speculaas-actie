@@ -9,6 +9,7 @@ export const supabase =
   url && anonKey
     ? createClient<Database>(url, anonKey, {
       auth: {
+        flowType: 'pkce',
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,

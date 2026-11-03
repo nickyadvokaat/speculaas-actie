@@ -87,7 +87,7 @@ export async function requestMagicLink(email: string): Promise<void> {
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${window.location.origin}${window.location.pathname}#/profiel`,
+      emailRedirectTo: `${window.location.origin}${window.location.pathname}?auth=profile`,
       shouldCreateUser: true,
     },
   })

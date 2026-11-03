@@ -18,11 +18,12 @@ import Toast from 'primevue/toast'
 import 'primeicons/primeicons.css'
 import App from './App.vue'
 import router from './router'
-import { initializeAuth } from './stores/auth'
+import { authState, initializeAuth } from './stores/auth'
 import { isSupabaseConfigured } from './lib/supabase'
 import './styles.css'
 
 async function startApp(): Promise<void> {
+  const shouldOpenProfile = new URLSearchParams(window.location.search).get('auth') === 'profile'
   await initializeAuth()
   const app = createApp(App)
   app.use(router)
@@ -52,6 +53,7 @@ async function startApp(): Promise<void> {
   app.component('Textarea', Textarea)
   app.component('Toast', Toast)
   await router.isReady()
+  if (shouldOpenProfile && authState.user) await router.replace('/profiel')
   app.mount('#app')
 }
 
