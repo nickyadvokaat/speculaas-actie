@@ -23,6 +23,18 @@
   --p-primary-active-color: var(--forest-dark);
   --p-primary-contrast-color: #ffffff;
   --p-focus-ring-color: rgb(117 71 45 / 24%);
+  --p-form-field-background: var(--surface-raised);
+  --p-form-field-border-color: #d7c5ad;
+  --p-form-field-color: #3e2e22;
+  --p-form-field-placeholder-color: #9a8b7b;
+  --p-form-field-focus-border-color: var(--forest);
+  --p-form-field-focus-ring-shadow: 0 0 0 .2rem rgb(117 71 45 / 18%);
+  --p-button-secondary-color: var(--forest);
+  --p-button-secondary-background: #f2e7d8;
+  --p-button-secondary-border-color: #decbb4;
+  --p-button-secondary-hover-color: var(--forest-dark);
+  --p-button-secondary-hover-background: #eaddca;
+  --p-button-secondary-hover-border-color: #cbb49a;
 }
 
 * { box-sizing: border-box; }
@@ -50,6 +62,7 @@ body::before {
 
 button, input, textarea { font: inherit; }
 a { color: inherit; }
+h1, h2, h3, h4, h5, h6 { color: #3e2e22; }
 
 .app-shell { min-height: 100vh; display: flex; flex-direction: column; }
 .site-header {
@@ -111,13 +124,21 @@ a { color: inherit; }
 .p-card .p-card-subtitle { margin-top: 7px; color: var(--muted); font-size: 13px; line-height: 1.55; }
 .p-card .p-card-content { padding-top: 20px; }
 .p-card .p-card-title, .sales-history-heading, .sales-order-heading, .group-heading h3,
-.summary-card .p-card-title, .buyer-card .p-card-title, .products-card .p-card-title { color: #3e2e22; }
+.summary-card .p-card-title, .buyer-card .p-card-title, .products-card .p-card-title,
+.product-card h3 { color: #3e2e22; }
 .card-icon, .side-icon { display: inline-grid; place-items: center; width: 39px; height: 39px; border-radius: 12px; background: var(--forest-soft); color: var(--forest); }
 .stack-form { display: grid; gap: 10px; }
 .stack-form label, .field label { color: #574538; font-size: 12px; font-weight: 700; }
-.p-inputtext, .p-textarea { width: 100%; border-color: #dfd2c0; border-radius: 10px; background: var(--surface-raised); font-size: 13px; }
+.p-inputtext, .p-textarea, .p-inputnumber-input, .p-select {
+  border-color: #d7c5ad !important;
+  border-radius: 10px;
+  color: #3e2e22 !important;
+  background: var(--surface-raised) !important;
+  font-size: 13px;
+}
+.p-inputtext::placeholder, .p-textarea::placeholder, .p-inputnumber-input::placeholder { color: #9a8b7b !important; }
 .p-inputtext { min-height: 43px; }
-input.p-inputtext:enabled:focus, textarea.p-textarea:enabled:focus, input.p-inputnumber-input:enabled:focus {
+body input.p-inputtext:enabled:focus, body textarea.p-textarea:enabled:focus, body input.p-inputnumber-input:enabled:focus {
   border-color: var(--forest) !important;
   box-shadow: 0 0 0 .2rem rgb(117 71 45 / 18%) !important;
 }
@@ -130,6 +151,30 @@ input[type='checkbox'] { accent-color: var(--forest); }
 .stack-form .p-button { width: 100%; justify-content: center; margin-top: 4px; min-height: 45px; }
 .p-button:not(.p-button-secondary):not(.p-button-text):not(.p-button-outlined):not(.p-button-danger) { background: var(--forest); border-color: var(--forest); }
 .p-button:not(.p-button-secondary):not(.p-button-text):not(.p-button-outlined):not(.p-button-danger):hover { background: var(--forest-dark); border-color: var(--forest-dark); }
+.p-button.p-button-secondary:not(.p-button-text):not(.p-button-outlined) {
+  color: var(--forest) !important;
+  border-color: #decbb4 !important;
+  background: #f2e7d8 !important;
+}
+.p-button.p-button-secondary:not(.p-button-text):not(.p-button-outlined):hover {
+  color: var(--forest-dark) !important;
+  border-color: #cbb49a !important;
+  background: #eaddca !important;
+}
+.p-button.p-button-secondary.p-button-text,
+.p-button.p-button-text:not(.p-button-danger) { color: var(--forest) !important; }
+.p-button.p-button-secondary.p-button-text:hover,
+.p-button.p-button-text:not(.p-button-danger):hover { color: var(--forest-dark) !important; background: #f2e7d8 !important; }
+.p-button.p-button-secondary.p-button-outlined {
+  color: var(--forest) !important;
+  border-color: #cbb49a !important;
+  background: transparent !important;
+}
+.p-button.p-button-secondary.p-button-outlined:hover {
+  color: var(--forest-dark) !important;
+  border-color: #a98767 !important;
+  background: #f3e8d8 !important;
+}
 .leaderboard-refresh.p-button.p-button-outlined.p-button-secondary {
   color: var(--forest);
   border-color: #cbb49a;
