@@ -324,6 +324,7 @@ a { color: inherit; }
   .summary-card .p-card-body { padding: 17px; }
   .summary-card .p-card-content { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
   .summary-card .p-card-title, .summary-lines, .summary-card .p-divider, .total-row, .discount-note, .submit-order, .tiny-note { grid-column: 1 / -1; }
+  .discount-total { grid-column: 1 / -1; }
   .summary-card .p-card-title { margin-bottom: 10px; }
   .summary-lines { grid-template-columns: 1fr 1fr; }
   .summary-lines > div { display: grid; gap: 3px; font-size: 10px; }

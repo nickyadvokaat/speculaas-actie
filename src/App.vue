@@ -45,7 +45,7 @@ async function logout(): Promise<void> {
         </span>
       </RouterLink>
       <nav class="main-nav" aria-label="Hoofdnavigatie">
-        <RouterLink to="/bestellen" v-if="authState.user">Nieuwe bestelling</RouterLink>
+        <RouterLink to="/bestellen" v-if="authState.user">Bestellen</RouterLink>
         <RouterLink to="/ranglijst">Ranglijst</RouterLink>
         <RouterLink
           to="/commissie"
