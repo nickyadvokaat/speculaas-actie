@@ -3,7 +3,7 @@
 :root {
   font-family: 'DM Sans', sans-serif;
   color: #1d2b24;
-  background: #f7f8f3;
+  background: #fcf1e1;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   font-smooth: always;
@@ -16,7 +16,7 @@
   --muted: #78827b;
   --line: #e6e9e3;
   --paper: #ffffff;
-  --soft-bg: #f7f8f3;
+  --soft-bg: #fcf1e1;
   --p-primary-color: var(--forest);
   --p-primary-hover-color: var(--forest-dark);
   --p-primary-active-color: var(--forest-dark);
@@ -30,9 +30,9 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(ellipse at 82% 0%, rgb(245 189 67 / 9%), transparent 26rem),
-    var(--soft-bg);
+  background-color: var(--soft-bg);
+  background-image: url('./assets/bg.png');
+  background-repeat: repeat;
 }
 
 button, input, textarea { font: inherit; }
