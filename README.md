@@ -73,6 +73,8 @@ verifiëren van de magic link zelf door naar hun profiel.
   lactosevrij tellen samen voor 3 voor € 12,50; resterende pakjes kosten
   € 4,60 per stuk.
 - Er is geen betaalverwerking of registratie van betaalstatus.
+- De top drie op basis van totale verkoopopbrengst wint cadeaubonnen van
+  respectievelijk € 25, € 15 en € 10.
 - De commissie krijgt toegang na toekenning van de `admin`-rol. De pagina
   ondersteunt totalen, wijzigen/annuleren, naamcorrecties en aftekenen als
   meegegeven.

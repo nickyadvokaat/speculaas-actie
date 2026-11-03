@@ -12,7 +12,7 @@ const isConfigured = isSupabaseConfigured
 const baseUrl = import.meta.env.BASE_URL
 const isPastDeadline = computed(() => new Date() > new Date('2026-11-12T23:59:59'))
 const routeTitle = computed(() => {
-  if (route.name === 'order') return 'Bestelling invoeren'
+  if (route.name === 'order') return 'Nieuwe bestelling'
   if (route.name === 'leaderboard') return 'Verkopersranglijst'
   if (route.name === 'commission') return 'Commissieoverzicht'
   if (route.name === 'profile') return 'Verkopersprofiel'
@@ -45,7 +45,7 @@ async function logout(): Promise<void> {
         </span>
       </RouterLink>
       <nav class="main-nav" aria-label="Hoofdnavigatie">
-        <RouterLink to="/bestellen" v-if="authState.user">Bestellen</RouterLink>
+        <RouterLink to="/bestellen" v-if="authState.user">Nieuwe bestelling</RouterLink>
         <RouterLink to="/ranglijst">Ranglijst</RouterLink>
         <RouterLink
           to="/commissie"

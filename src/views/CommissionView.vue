@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { fetchCommissionData, updateOrder, updateSellerName } from '../lib/data'
 import {
+  calculateDiscountCents,
   calculateTotalCents,
   formatCurrency,
   type ProductCounts,
@@ -260,6 +261,14 @@ onMounted(() => void load())
           </Column>
           <Column field="total_cents" header="Totaal" sortable>
             <template #body="{ data }">{{ formatCurrency(data.total_cents) }}</template>
+          </Column>
+          <Column header="Korting">
+            <template #body="{ data }">
+              <span v-if="calculateDiscountCents(data) > 0" class="order-discount">
+                − {{ formatCurrency(calculateDiscountCents(data)) }}
+              </span>
+              <span v-else class="muted">—</span>
+            </template>
           </Column>
           <Column header="Meegegeven">
             <template #body="{ data }">

@@ -71,6 +71,10 @@ export type Database = {
         Args: Record<string, never>
         Returns: { display_name: string; total_cents: number }[]
       }
+      get_my_sales_total: {
+        Args: Record<string, never>
+        Returns: number
+      }
       is_commission_member: {
         Args: Record<string, never>
         Returns: boolean

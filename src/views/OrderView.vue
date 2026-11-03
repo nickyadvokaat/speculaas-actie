@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { submitOrder } from '../lib/data'
+import { fetchMySalesTotal, submitOrder } from '../lib/data'
 import {
+  calculateDiscountCents,
   calculateTotalCents,
   emptyCounts,
   formatCurrency,
@@ -19,7 +20,9 @@ const customerName = ref(authState.profile?.display_name ?? '')
 const address = ref('')
 const saving = ref(false)
 const savedOrderId = ref('')
+const mySalesTotalCents = ref<number | null>(null)
 const totalCents = computed(() => calculateTotalCents(counts))
+const discountCents = computed(() => calculateDiscountCents(counts))
 const specialWaffleCount = computed(() => counts.glutenvrij + counts.lactosevrij)
 const specialWaffleTotal = computed(
   () =>
@@ -41,22 +44,37 @@ const productGroups = [
   {
     title: 'Speculaaspoppen',
     description: '500 gram · € 7,00 per stuk',
-    items: [{ key: 'speculaaspoppen', label: 'Speculaaspop', price: '€ 7,00 per stuk' }],
+    items: [{ key: 'speculaaspoppen', label: 'Speculaaspop', price: '€ 7,00 per stuk', image: 'speculaaspop.svg' }],
   },
   {
     title: 'Gewone stroopwafels',
     description: '10 stuks per pakje · 1 voor € 3,30 · 3 voor € 9,00',
-    items: [{ key: 'stroopwafels', label: 'Pakje gewone stroopwafels', price: '3 voor € 9,00' }],
+    items: [{ key: 'stroopwafels', label: 'Pakje gewone stroopwafels', price: '3 voor € 9,00', image: 'stroopwafels.svg' }],
   },
   {
     title: 'Speciale stroopwafels',
     description: 'Glutenvrij en lactosevrij combineren voor de staffelkorting',
     items: [
-      { key: 'glutenvrij', label: 'Pakje glutenvrije stroopwafels', price: '€ 4,60 per pakje' },
-      { key: 'lactosevrij', label: 'Pakje lactosevrije stroopwafels', price: '€ 4,60 per pakje' },
+      { key: 'glutenvrij', label: 'Pakje glutenvrije stroopwafels', price: '€ 4,60 per pakje', image: 'glutenvrij.svg' },
+      { key: 'lactosevrij', label: 'Pakje lactosevrije stroopwafels', price: '€ 4,60 per pakje', image: 'lactosevrij.svg' },
     ],
   },
 ] as const
+
+const baseUrl = import.meta.env.BASE_URL
+
+async function loadMySalesTotal(): Promise<void> {
+  try {
+    mySalesTotalCents.value = await fetchMySalesTotal()
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Verkooptotaal niet geladen',
+      detail: error instanceof Error ? error.message : 'Controleer je verbinding en probeer opnieuw.',
+      life: 5000,
+    })
+  }
+}
 
 async function saveOrder(): Promise<void> {
   const buyer = customerName.value.trim()
@@ -65,6 +83,7 @@ async function saveOrder(): Promise<void> {
   savedOrderId.value = ''
   try {
     savedOrderId.value = await submitOrder(buyer, address.value, counts)
+    if (mySalesTotalCents.value !== null) mySalesTotalCents.value += totalCents.value
     toast.add({
       severity: 'success',
       summary: 'Bestelling opgeslagen',
@@ -85,11 +104,24 @@ async function saveOrder(): Promise<void> {
     saving.value = false
   }
 }
+
+onMounted(() => void loadMySalesTotal())
 </script>
 
 <template>
   <div class="order-layout">
     <form class="order-form" @submit.prevent="saveOrder">
+      <Card class="seller-total-card">
+        <template #content>
+          <div class="seller-total-copy">
+            <span class="stat-label">Jouw totale verkoop</span>
+            <strong v-if="mySalesTotalCents !== null">{{ formatCurrency(mySalesTotalCents) }}</strong>
+            <strong v-else aria-label="Verkooptotaal laden"><i class="pi pi-spin pi-spinner" aria-hidden="true"></i></strong>
+            <small>Alle actieve bestellingen van jou samen</small>
+          </div>
+          <i class="pi pi-chart-line seller-total-icon" aria-hidden="true"></i>
+        </template>
+      </Card>
       <Card class="buyer-card">
         <template #title>
           <span class="step-number">1</span>
@@ -139,7 +171,8 @@ async function saveOrder(): Promise<void> {
             </div>
             <div class="product-quantity-list">
               <div v-for="item in group.items" :key="item.key" class="quantity-row">
-                <div>
+                <img class="quantity-product-art" :src="`${baseUrl}products/${item.image}`" alt="" />
+                <div class="quantity-product-copy">
                   <strong>{{ item.label }}</strong>
                   <small>{{ item.price }}</small>
                 </div>
@@ -179,9 +212,15 @@ async function saveOrder(): Promise<void> {
           </div>
           <Divider />
           <div class="total-row"><span>Totaal</span><strong>{{ formatCurrency(totalCents) }}</strong></div>
+          <div v-if="discountCents > 0" class="discount-total">
+            <span><i class="pi pi-tag" aria-hidden="true"></i> Jouw korting</span>
+            <strong>− {{ formatCurrency(discountCents) }}</strong>
+          </div>
           <p class="discount-note">
-            <i class="pi pi-tag" aria-hidden="true"></i>
-            De korting voor glutenvrij en lactosevrij wordt samen berekend.
+            <i class="pi pi-info-circle" aria-hidden="true"></i>
+            {{ discountCents > 0
+              ? 'De korting is al verrekend in het totaal.'
+              : 'Korting geldt vanaf 3 pakjes gewone of glutenvrije/lactosevrije stroopwafels.' }}
           </p>
           <Button
             label="Bestelling afronden"

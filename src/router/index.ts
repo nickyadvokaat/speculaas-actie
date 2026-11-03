@@ -18,6 +18,11 @@ router.beforeEach(async (to) => {
     await initializeAuth()
   }
   if (authState.user && !authState.profileLoaded) await refreshProfile()
+  if (to.name === 'home' && authState.user) {
+    return authState.profile?.display_name
+      ? { name: 'order' }
+      : { name: 'profile' }
+  }
   if (to.meta.auth && !authState.user) return { name: 'home' }
   if (to.name === 'profile' && authState.profile?.display_name) return { name: 'order' }
   if (to.meta.profile && !authState.profile?.display_name) return { name: 'profile' }

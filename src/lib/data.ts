@@ -13,6 +13,14 @@ export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
   return data ?? []
 }
 
+export async function fetchMySalesTotal(): Promise<number> {
+  const { data, error } = await requireSupabase().rpc('get_my_sales_total')
+  if (error) throw error
+  const total = Number(data)
+  if (!Number.isFinite(total)) throw new Error('Je verkooptotaal kon niet worden verwerkt.')
+  return total
+}
+
 export async function submitOrder(
   customerName: string,
   address: string,

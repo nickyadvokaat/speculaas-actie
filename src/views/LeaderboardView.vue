@@ -33,7 +33,7 @@ onMounted(() => void load())
           <div>
             <p class="eyebrow">Samen maken we verschil</p>
             <h2>De tussenstand</h2>
-            <p class="muted">Verkoopopbrengst per verkoper · bijgewerkt na iedere bestelling</p>
+            <p class="muted">Totale verkoopopbrengst per verkoper. Iedere bestelling telt meteen mee; geannuleerde bestellingen niet.</p>
           </div>
           <Button label="Vernieuwen" icon="pi pi-refresh" severity="secondary" outlined @click="load" />
         </div>
@@ -67,6 +67,30 @@ onMounted(() => void load())
           <i class="pi pi-eye-slash" aria-hidden="true"></i>
           Alleen de ranglijstnaam en totale verkoopopbrengst zijn openbaar.
         </p>
+      </template>
+    </Card>
+    <Card class="prizes-card">
+      <template #content>
+        <p class="eyebrow">Extra beloning</p>
+        <h2>Prijzen voor de top 3</h2>
+        <p class="muted">De verkopers met de hoogste totale verkoopopbrengst winnen een cadeaubon.</p>
+        <div class="prize-list">
+          <div
+            v-for="prize in [
+              { place: '1e plaats', amount: '€ 25', icon: 'pi pi-trophy', style: 'gold' },
+              { place: '2e plaats', amount: '€ 15', icon: 'pi pi-star-fill', style: 'silver' },
+              { place: '3e plaats', amount: '€ 10', icon: 'pi pi-star', style: 'bronze' },
+            ]"
+            :key="prize.place"
+            class="prize-row"
+            :class="`prize-${prize.style}`"
+          >
+            <span class="prize-icon"><i :class="prize.icon" aria-hidden="true"></i></span>
+            <strong>{{ prize.place }}</strong>
+            <span>cadeaubon</span>
+            <strong class="prize-value">{{ prize.amount }}</strong>
+          </div>
+        </div>
       </template>
     </Card>
     <aside class="side-card">

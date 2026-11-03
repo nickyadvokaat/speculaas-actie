@@ -28,6 +28,19 @@ export function calculateTotalCents(counts: ProductCounts): number {
   )
 }
 
+export function calculateDiscountCents(counts: ProductCounts): number {
+  const regularDiscount =
+    counts.stroopwafels * 330 -
+    (Math.floor(counts.stroopwafels / 3) * 900 +
+      (counts.stroopwafels % 3) * 330)
+  const specialCount = counts.glutenvrij + counts.lactosevrij
+  const specialDiscount =
+    specialCount * 460 -
+    (Math.floor(specialCount / 3) * 1250 + (specialCount % 3) * 460)
+
+  return regularDiscount + specialDiscount
+}
+
 export function formatCurrency(cents: number): string {
   return new Intl.NumberFormat('nl-NL', {
     style: 'currency',
