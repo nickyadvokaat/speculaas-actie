@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { LeaderboardEntry, SaleOrder, SellerProfile } from '../types'
+import type { LeaderboardEntry, MySaleOrder, SaleOrder, SellerProfile } from '../types'
 import type { ProductCounts } from './pricing'
 
 function requireSupabase() {
@@ -19,6 +19,12 @@ export async function fetchMySalesTotal(): Promise<number> {
   const total = Number(data)
   if (!Number.isFinite(total)) throw new Error('Je verkooptotaal kon niet worden verwerkt.')
   return total
+}
+
+export async function fetchMySalesOrders(): Promise<MySaleOrder[]> {
+  const { data, error } = await requireSupabase().rpc('get_my_sales_orders')
+  if (error) throw error
+  return data ?? []
 }
 
 export async function submitOrder(

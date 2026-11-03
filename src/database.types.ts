@@ -75,6 +75,20 @@ export type Database = {
         Args: Record<string, never>
         Returns: number
       }
+      get_my_sales_orders: {
+        Args: Record<string, never>
+        Returns: {
+          id: string
+          created_at: string
+          customer_name: string
+          speculaaspoppen: number
+          stroopwafels: number
+          glutenvrij: number
+          lactosevrij: number
+          total_cents: number
+          cancelled: boolean
+        }[]
+      }
       is_commission_member: {
         Args: Record<string, never>
         Returns: boolean

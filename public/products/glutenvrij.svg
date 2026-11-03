@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
-  <rect width="96" height="96" rx="24" fill="#E6F1DF"/>
-  <path d="M22 56c0-15 12-27 27-27s27 12 27 27v18H22V56Z" fill="#FFF9E8" stroke="#8BAE72" stroke-width="3"/>
-  <path d="M27 57c0-12 10-22 22-22s22 10 22 22v11H27V57Z" fill="#C77A32"/>
-  <path d="M29 59h40M32 52h34M38 43l22 21M49 37l18 18M38 64l25-25" stroke="#8E4C24" stroke-width="2" opacity=".8"/>
-  <path d="M19 73h60v7H19z" fill="#C4D8A9" stroke="#8BAE72" stroke-width="2"/>
-  <circle cx="70" cy="27" r="13" fill="#236244"/>
-  <path d="m64 27 4 4 8-9" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="96" height="96" rx="24" fill="#F3F6E9"/>
+  <circle cx="48" cy="48" r="33" fill="#fff" stroke="#DDE5D2" stroke-width="2"/>
+  <path d="M34 67c8-11 13-24 15-40M39 59c-8-1-12-5-14-11 7 0 12 3 15 8m-1-8c-7-2-10-6-11-12 6 1 10 4 12 9m2-1c-1-7 1-12 6-16 2 6 1 11-4 16m-1 6c5-6 10-8 16-7-3 6-8 9-15 9m-4 9c6-4 12-4 17-1-5 5-10 6-17 4" stroke="#557A44" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M27 68 69 27" stroke="#D65348" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="48" cy="48" r="34" stroke="#D65348" stroke-width="2.5"/>
+  <text x="48" y="87" fill="#53664A" font-family="Arial,sans-serif" font-size="8" font-weight="700" letter-spacing="1.2" text-anchor="middle">GLUTENVRIJ</text>
 </svg>

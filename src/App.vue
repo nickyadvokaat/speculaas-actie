@@ -37,10 +37,10 @@ async function logout(): Promise<void> {
 <template>
   <div class="app-shell">
     <header class="site-header">
-      <RouterLink class="brand" to="/" aria-label="De Linge PCG actie - startpagina">
+      <RouterLink class="brand" to="/" aria-label="De Linge/PCG actie - startpagina">
         <img class="brand-logo" :src="`${baseUrl}logo.png`" alt="" />
         <span class="brand-copy">
-          <strong>De Linge PCG</strong>
+          <strong>De Linge/PCG</strong>
           <small>Speculaasactie</small>
         </span>
       </RouterLink>
@@ -80,7 +80,7 @@ async function logout(): Promise<void> {
     <main class="page-content">
       <div class="page-heading" v-if="route.name !== 'home'">
         <div>
-          <p class="eyebrow">De Linge PCG · Speculaasactie 2026</p>
+          <p class="eyebrow">De Linge/PCG · Speculaasactie 2026</p>
           <h1>{{ routeTitle }}</h1>
         </div>
         <span class="heading-season">2026</span>
@@ -89,7 +89,7 @@ async function logout(): Promise<void> {
     </main>
 
     <footer class="site-footer">
-      <span>Met elkaar voor De Linge PCG</span>
+      <span>Met elkaar voor De Linge/PCG</span>
       <span>Actie sluit op 12 november 2026</span>
     </footer>
     <Toast position="top-right" />

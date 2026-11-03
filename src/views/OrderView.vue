@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { fetchMySalesTotal, submitOrder } from '../lib/data'
+import { fetchMySalesOrders, fetchMySalesTotal, submitOrder } from '../lib/data'
 import {
   calculateDiscountCents,
   calculateTotalCents,
@@ -13,14 +13,20 @@ import {
   type ProductCounts,
 } from '../lib/pricing'
 import { authState } from '../stores/auth'
+import type { MySaleOrder } from '../types'
 
 const toast = useToast()
 const counts = reactive<ProductCounts>(emptyCounts())
 const customerName = ref(authState.profile?.display_name ?? '')
 const address = ref('')
 const saving = ref(false)
-const savedOrderId = ref('')
+const confirmationVisible = ref(false)
+const successVisible = ref(false)
 const mySalesTotalCents = ref<number | null>(null)
+const mySalesOrders = ref<MySaleOrder[]>([])
+const salesExpanded = ref(false)
+const salesLoading = ref(false)
+const completedOrder = ref<{ buyer: string; totalCents: number } | null>(null)
 const totalCents = computed(() => calculateTotalCents(counts))
 const discountCents = computed(() => calculateDiscountCents(counts))
 const specialWaffleCount = computed(() => counts.glutenvrij + counts.lactosevrij)
@@ -76,23 +82,56 @@ async function loadMySalesTotal(): Promise<void> {
   }
 }
 
-async function saveOrder(): Promise<void> {
+async function loadMySalesOrders(): Promise<void> {
+  salesLoading.value = true
+  try {
+    mySalesOrders.value = await fetchMySalesOrders()
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Je transacties niet geladen',
+      detail: error instanceof Error ? error.message : 'Controleer je verbinding en probeer opnieuw.',
+      life: 5000,
+    })
+  } finally {
+    salesLoading.value = false
+  }
+}
+
+async function toggleSales(): Promise<void> {
+  salesExpanded.value = !salesExpanded.value
+  if (salesExpanded.value) {
+    await Promise.all([loadMySalesOrders(), loadMySalesTotal()])
+  }
+}
+
+function formatDate(value: string): string {
+  return new Intl.DateTimeFormat('nl-NL', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value))
+}
+
+function requestOrderConfirmation(): void {
+  if (customerName.value.trim() && orderIsValid.value) confirmationVisible.value = true
+}
+
+async function confirmOrder(): Promise<void> {
   const buyer = customerName.value.trim()
   if (!buyer || !orderIsValid.value) return
   saving.value = true
-  savedOrderId.value = ''
   try {
-    savedOrderId.value = await submitOrder(buyer, address.value, counts)
-    if (mySalesTotalCents.value !== null) mySalesTotalCents.value += totalCents.value
-    toast.add({
-      severity: 'success',
-      summary: 'Bestelling opgeslagen',
-      detail: 'De verkoop is direct verwerkt in de ranglijst.',
-      life: 5000,
-    })
+    await submitOrder(buyer, address.value, counts)
+    completedOrder.value = { buyer, totalCents: totalCents.value }
+    confirmationVisible.value = false
     Object.assign(counts, emptyCounts())
     customerName.value = authState.profile?.display_name ?? ''
     address.value = ''
+    await Promise.all([
+      loadMySalesTotal(),
+      ...(salesExpanded.value ? [loadMySalesOrders()] : []),
+    ])
+    successVisible.value = true
   } catch (error) {
     toast.add({
       severity: 'error',
@@ -110,16 +149,73 @@ onMounted(() => void loadMySalesTotal())
 
 <template>
   <div class="order-layout">
-    <form class="order-form" @submit.prevent="saveOrder">
-      <Card class="seller-total-card">
+    <form class="order-form" @submit.prevent="requestOrderConfirmation">
+      <Card class="seller-total-card" :class="{ 'sales-expanded': salesExpanded }">
         <template #content>
-          <div class="seller-total-copy">
-            <span class="stat-label">Jouw totale verkoop</span>
-            <strong v-if="mySalesTotalCents !== null">{{ formatCurrency(mySalesTotalCents) }}</strong>
-            <strong v-else aria-label="Verkooptotaal laden"><i class="pi pi-spin pi-spinner" aria-hidden="true"></i></strong>
-            <small>Alle actieve bestellingen van jou samen</small>
+          <button
+            type="button"
+            class="seller-total-toggle"
+            :aria-expanded="salesExpanded"
+            aria-controls="seller-sales-history"
+            @click="toggleSales"
+          >
+            <span class="seller-total-copy">
+              <span class="stat-label">Jouw totale verkoop</span>
+              <strong v-if="mySalesTotalCents !== null">{{ formatCurrency(mySalesTotalCents) }}</strong>
+              <strong v-else aria-label="Verkooptotaal laden"><i class="pi pi-spin pi-spinner" aria-hidden="true"></i></strong>
+              <small>Actieve bestellingen · tik voor je transacties</small>
+            </span>
+            <span class="seller-total-icon">
+              <i :class="salesExpanded ? 'pi pi-chevron-up' : 'pi pi-chart-line'" aria-hidden="true"></i>
+            </span>
+          </button>
+          <div v-if="salesExpanded" id="seller-sales-history" class="sales-history">
+            <div class="sales-history-heading">
+              <strong>Jouw transacties</strong>
+              <Button
+                type="button"
+                icon="pi pi-refresh"
+                text
+                rounded
+                severity="secondary"
+                aria-label="Transacties vernieuwen"
+                :loading="salesLoading"
+                @click="loadMySalesOrders"
+              />
+            </div>
+            <div v-if="salesLoading" class="sales-history-state">
+              <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Transacties laden…
+            </div>
+            <div v-else-if="mySalesOrders.length === 0" class="sales-history-state">
+              Je hebt nog geen bestellingen ingevoerd.
+            </div>
+            <div v-else class="sales-history-list">
+              <article
+                v-for="order in mySalesOrders"
+                :key="order.id"
+                class="sales-history-order"
+                :class="{ 'sales-history-cancelled': order.cancelled }"
+              >
+                <div class="sales-order-heading">
+                  <strong>{{ order.customer_name }}</strong>
+                  <Tag v-if="order.cancelled" value="Geannuleerd" severity="danger" />
+                  <strong v-else class="sales-order-total">{{ formatCurrency(order.total_cents) }}</strong>
+                </div>
+                <small>{{ formatDate(order.created_at) }}</small>
+                <p>
+                  {{ [
+                    order.speculaaspoppen && `${order.speculaaspoppen} speculaaspop(pen)`,
+                    order.stroopwafels && `${order.stroopwafels} gewoon`,
+                    order.glutenvrij && `${order.glutenvrij} glutenvrij`,
+                    order.lactosevrij && `${order.lactosevrij} lactosevrij`,
+                  ].filter(Boolean).join(' · ') }}
+                </p>
+                <strong v-if="order.cancelled" class="cancelled-order-total">
+                  {{ formatCurrency(order.total_cents) }}
+                </strong>
+              </article>
+            </div>
           </div>
-          <i class="pi pi-chart-line seller-total-icon" aria-hidden="true"></i>
         </template>
       </Card>
       <Card class="buyer-card">
@@ -224,21 +320,75 @@ onMounted(() => void loadMySalesTotal())
           </p>
           <Button
             label="Bestelling afronden"
-            icon="pi pi-check"
+            icon="pi pi-arrow-right"
+            icon-pos="right"
             class="submit-order"
-            :loading="saving"
             :disabled="!customerName.trim() || !orderIsValid"
-            @click="saveOrder"
+            @click="requestOrderConfirmation"
           />
           <p class="muted tiny-note">
             Betaling regel je buiten deze app. Er wordt geen betaalstatus opgeslagen.
           </p>
         </template>
       </Card>
-      <Message v-if="savedOrderId" severity="success" :closable="false" class="saved-message">
-        <strong>Bestelling afgerond!</strong>
-        <span>Je verkoop is direct op de ranglijst verwerkt.</span>
-      </Message>
     </aside>
   </div>
+
+  <Dialog
+    v-model:visible="confirmationVisible"
+    modal
+    header="Bestelling controleren"
+    :style="{ width: 'min(28rem, 94vw)' }"
+    :closable="!saving"
+    :close-on-escape="!saving"
+  >
+    <div class="confirm-order-content">
+      <p>Controleer de bestelling voor <strong>{{ customerName.trim() }}</strong>.</p>
+      <div class="confirm-order-lines">
+        <div v-if="counts.speculaaspoppen"><span>{{ counts.speculaaspoppen }} × speculaaspop</span><strong>{{ formatCurrency(counts.speculaaspoppen * 700) }}</strong></div>
+        <div v-if="counts.stroopwafels"><span>{{ counts.stroopwafels }} × gewoon stroopwafelpakje</span><strong>{{ formatCurrency(Math.floor(counts.stroopwafels / 3) * 900 + (counts.stroopwafels % 3) * 330) }}</strong></div>
+        <div v-if="specialWaffleCount"><span>{{ counts.glutenvrij }} glutenvrij · {{ counts.lactosevrij }} lactosevrij</span><strong>{{ formatCurrency(specialWaffleTotal) }}</strong></div>
+        <div v-if="discountCents > 0" class="confirm-discount"><span>Korting inbegrepen</span><strong>− {{ formatCurrency(discountCents) }}</strong></div>
+        <div class="confirm-order-total"><span>Totaal</span><strong>{{ formatCurrency(totalCents) }}</strong></div>
+      </div>
+      <p class="muted">Na opslaan telt deze verkoop direct mee in jouw totaal en de tussenstand.</p>
+    </div>
+    <template #footer>
+      <Button label="Terug" severity="secondary" text :disabled="saving" @click="confirmationVisible = false" />
+      <Button
+        label="Ja, bestelling opslaan"
+        icon="pi pi-check"
+        :loading="saving"
+        @click="confirmOrder"
+      />
+    </template>
+  </Dialog>
+
+  <Dialog
+    v-model:visible="successVisible"
+    modal
+    :show-header="false"
+    :closable="false"
+    :close-on-escape="false"
+    :style="{ width: 'min(25rem, 92vw)' }"
+    class="order-success-dialog"
+  >
+    <div class="order-success-content">
+      <div class="success-animation" role="img" aria-label="Bestelling succesvol opgeslagen">
+        <span class="success-spark spark-one"></span>
+        <span class="success-spark spark-two"></span>
+        <span class="success-spark spark-three"></span>
+        <svg viewBox="0 0 72 72" aria-hidden="true">
+          <circle class="success-circle" cx="36" cy="36" r="31" />
+          <path class="success-check" d="m20 37 10 10 22-23" />
+        </svg>
+      </div>
+      <p class="eyebrow">Gelukt!</p>
+      <h2>Bestelling opgeslagen</h2>
+      <p>De verkoop van <strong>{{ completedOrder?.buyer }}</strong> is toegevoegd.</p>
+      <div class="success-amount">{{ completedOrder ? formatCurrency(completedOrder.totalCents) : '' }}</div>
+      <p class="muted">Je verkooptotaal en de tussenstand zijn bijgewerkt.</p>
+      <Button label="Verder met bestellen" icon="pi pi-arrow-right" icon-pos="right" @click="successVisible = false" />
+    </div>
+  </Dialog>
 </template>

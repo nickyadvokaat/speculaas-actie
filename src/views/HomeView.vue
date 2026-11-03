@@ -52,7 +52,7 @@ async function signInWithTestPassword(): Promise<void> {
   <section class="hero-grid">
     <div class="hero-copy">
       <p class="eyebrow">Een warme actie voor onze club</p>
-      <h1>De lekkerste manier om <span>De Linge PCG</span> te steunen.</h1>
+      <h1>De lekkerste manier om <span>De Linge/PCG</span> te steunen.</h1>
       <p class="hero-description">
         Verkoop speculaaspoppen en stroopwafels. Voer je bestellingen eenvoudig
         in en volg de opbrengst op de ranglijst.
@@ -170,7 +170,12 @@ async function signInWithTestPassword(): Promise<void> {
       </article>
       <article class="product-card">
         <img class="product-art" :src="`${baseUrl}products/glutenvrij.svg`" alt="" />
-        <div><h3>Glutenvrij & lactosevrij</h3><p>Combineren · 3 pakjes voor € 12,50</p></div>
+        <div><h3>Glutenvrij</h3><p>3 pakjes glutenvrij/lactosevrij samen voor € 12,50</p></div>
+        <strong>€ 4,60</strong>
+      </article>
+      <article class="product-card">
+        <img class="product-art" :src="`${baseUrl}products/lactosevrij.svg`" alt="" />
+        <div><h3>Lactosevrij</h3><p>Combineren · 3 pakjes voor € 12,50</p></div>
         <strong>€ 4,60</strong>
       </article>
     </div>

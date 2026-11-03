@@ -1,4 +1,4 @@
-# De Linge PCG speculaasactie
+# De Linge/PCG speculaasactie
 
 Mobiele bestelapp voor de jaarlijkse speculaasactie. De frontend gebruikt Vue
 3, Vue Router en PrimeVue; Supabase verzorgt magic-link-authenticatie, opslag,
@@ -75,6 +75,8 @@ verifiëren van de magic link zelf door naar hun profiel.
 - Er is geen betaalverwerking of registratie van betaalstatus.
 - De top drie op basis van totale verkoopopbrengst wint cadeaubonnen van
   respectievelijk € 25, € 15 en € 10.
+- Verkopers kunnen hun eigen bestelgeschiedenis bekijken. Deze afgeschermde
+  weergave bevat geen koperadressen en is niet beschikbaar voor andere verkopers.
 - De commissie krijgt toegang na toekenning van de `admin`-rol. De pagina
   ondersteunt totalen, wijzigen/annuleren, naamcorrecties en aftekenen als
   meegegeven.

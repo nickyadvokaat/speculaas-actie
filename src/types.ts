@@ -23,3 +23,16 @@ export interface SaleOrder {
   cancelled: boolean
   created_at: string
 }
+
+export type MySaleOrder = Pick<
+  SaleOrder,
+  | 'id'
+  | 'created_at'
+  | 'customer_name'
+  | 'speculaaspoppen'
+  | 'stroopwafels'
+  | 'glutenvrij'
+  | 'lactosevrij'
+  | 'total_cents'
+  | 'cancelled'
+>
