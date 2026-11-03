@@ -1,0 +1,135 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import { authState, requestMagicLink } from '../stores/auth'
+import { isSupabaseConfigured } from '../lib/supabase'
+
+const email = ref('')
+const sending = ref(false)
+const linkSent = ref(false)
+const toast = useToast()
+
+async function sendLink(): Promise<void> {
+  if (!email.value.trim()) return
+  sending.value = true
+  try {
+    await requestMagicLink(email.value.trim())
+    linkSent.value = true
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Aanmelden mislukt',
+      detail: error instanceof Error ? error.message : 'Probeer het opnieuw.',
+      life: 5000,
+    })
+  } finally {
+    sending.value = false
+  }
+}
+</script>
+
+<template>
+  <section class="hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Een warme actie voor onze club</p>
+      <h1>De lekkerste manier om <span>De Linge PCG</span> te steunen.</h1>
+      <p class="hero-description">
+        Verkoop speculaaspoppen en stroopwafels. Voer je bestellingen eenvoudig
+        in en volg de opbrengst op de ranglijst.
+      </p>
+      <div class="hero-pills">
+        <span><i class="pi pi-calendar" aria-hidden="true"></i> Tot 12 november 2026</span>
+        <span><i class="pi pi-mobile" aria-hidden="true"></i> Makkelijk op je telefoon</span>
+      </div>
+      <div v-if="authState.user" class="welcome-card">
+        <div class="welcome-icon"><i class="pi pi-check" aria-hidden="true"></i></div>
+        <div>
+          <strong>Welkom{{ authState.profile?.display_name ? `, ${authState.profile.display_name}` : '' }}!</strong>
+          <p>Je bent aangemeld. Je kunt nu bestellingen invoeren.</p>
+        </div>
+        <RouterLink class="text-action" to="/bestellen">Bestellen <i class="pi pi-arrow-right" aria-hidden="true"></i></RouterLink>
+      </div>
+    </div>
+
+    <Card class="login-card" v-if="!authState.user">
+      <template #title>
+        <span class="card-icon"><i class="pi pi-envelope" aria-hidden="true"></i></span>
+        <span>Verkoper aanmelden</span>
+      </template>
+      <template #subtitle>
+        Meld je eenmalig aan met je e-mailadres. Je krijgt een veilige inloglink.
+      </template>
+      <template #content>
+        <form class="stack-form" @submit.prevent="sendLink">
+          <label for="seller-email">E-mailadres</label>
+          <InputText
+            id="seller-email"
+            v-model="email"
+            type="email"
+            autocomplete="email"
+            placeholder="jij@voorbeeld.nl"
+            required
+            :disabled="!isSupabaseConfigured || sending"
+          />
+          <Button
+            type="submit"
+            label="Stuur mij een inloglink"
+            icon="pi pi-arrow-right"
+            icon-pos="right"
+            :loading="sending"
+            :disabled="!isSupabaseConfigured"
+          />
+        </form>
+        <Message v-if="linkSent" severity="success" :closable="false" class="form-message">
+          Check je inbox en open de link op dit apparaat.
+        </Message>
+        <Message v-if="authState.error" severity="error" :closable="false" class="form-message">
+          {{ authState.error }}
+        </Message>
+        <p class="privacy-note">
+          <i class="pi pi-lock" aria-hidden="true"></i>
+          Je e-mailadres is niet zichtbaar op de ranglijst.
+        </p>
+      </template>
+    </Card>
+    <div v-else class="hero-art" aria-hidden="true">
+      <div class="art-sun"></div>
+      <div class="art-card">
+        <span class="art-label">Samen sterk</span>
+        <strong>Een bestelling<br />voor de club</strong>
+        <span class="art-cookie">✦</span>
+        <span class="art-footer">Speculaasactie 2026</span>
+      </div>
+      <div class="floating-price">€ 7,-<small>speculaaspop</small></div>
+    </div>
+  </section>
+
+  <section class="product-intro">
+    <div class="section-title">
+      <div>
+        <p class="eyebrow">Bestel iets lekkers</p>
+        <h2>Voor ieder wat lekkers</h2>
+      </div>
+      <RouterLink class="text-action" to="/ranglijst">
+        Bekijk ranglijst <i class="pi pi-arrow-right" aria-hidden="true"></i>
+      </RouterLink>
+    </div>
+    <div class="product-cards">
+      <article class="product-card">
+        <span class="product-emoji" aria-hidden="true">🍪</span>
+        <div><h3>Speculaaspop</h3><p>Ambachtelijk en 500 gram</p></div>
+        <strong>€ 7,00</strong>
+      </article>
+      <article class="product-card">
+        <span class="product-emoji" aria-hidden="true">☕</span>
+        <div><h3>Stroopwafels</h3><p>10 stuks per pakje · 3 voor € 9,-</p></div>
+        <strong>v.a. € 3,30</strong>
+      </article>
+      <article class="product-card">
+        <span class="product-emoji" aria-hidden="true">🌾</span>
+        <div><h3>Glutenvrij & lactosevrij</h3><p>Combineren · 3 pakjes voor € 12,50</p></div>
+        <strong>€ 4,60</strong>
+      </article>
+    </div>
+  </section>
+</template>
