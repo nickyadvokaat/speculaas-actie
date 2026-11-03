@@ -94,6 +94,15 @@ export async function requestMagicLink(email: string): Promise<void> {
   if (error) throw error
 }
 
+export async function signInForDevelopment(email: string, password: string): Promise<void> {
+  if (!import.meta.env.DEV) {
+    throw new Error('Wachtwoordaanmelding is alleen beschikbaar tijdens lokale ontwikkeling.')
+  }
+  if (!supabase) throw new Error('De Supabase-configuratie ontbreekt.')
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error) throw error
+}
+
 export async function updateDisplayName(displayName: string): Promise<void> {
   if (!supabase || !authState.user) {
     throw new Error('Meld je eerst aan om een ranglijstnaam in te stellen.')

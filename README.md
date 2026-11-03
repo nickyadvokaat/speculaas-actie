@@ -17,6 +17,12 @@ toegangsregels en de openbare ranglijst. Database migrations worden vanuit
    Supabase Auth URL Configuration bij de toegestane redirect-URL's.
 6. Start `npm run dev`.
 
+Voor lokaal testen zonder e-mail kun je in **Authentication → Users** een
+testgebruiker met wachtwoord aanmaken en e-mailbevestiging aanvinken. Gebruik
+het testaccount in het lokale testaanmeldformulier op de startpagina. Deze
+wachtwoordaanmelding is alleen in de ontwikkelversie beschikbaar en wordt niet
+in de productiebuild opgenomen. Het profiel wordt automatisch aangemaakt.
+
 De anon/publishable key is bedoeld voor gebruik in een browser. De database-
 en Row Level Security-regels in de migratie beschermen bestellingen; zet nooit
 de `service_role`- of geheime sleutel in de frontend.

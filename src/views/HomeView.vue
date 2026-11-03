@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { authState, requestMagicLink } from '../stores/auth'
+import { authState, requestMagicLink, signInForDevelopment } from '../stores/auth'
 import { isSupabaseConfigured } from '../lib/supabase'
 
 const email = ref('')
+const password = ref('')
 const sending = ref(false)
+const signingIn = ref(false)
 const linkSent = ref(false)
 const toast = useToast()
+const isDevelopment = import.meta.env.DEV
 
 async function sendLink(): Promise<void> {
   if (!email.value.trim()) return
@@ -24,6 +27,22 @@ async function sendLink(): Promise<void> {
     })
   } finally {
     sending.value = false
+  }
+}
+
+async function signInWithTestPassword(): Promise<void> {
+  signingIn.value = true
+  try {
+    await signInForDevelopment(email.value.trim(), password.value)
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Testaanmelding mislukt',
+      detail: error instanceof Error ? error.message : 'Probeer het opnieuw.',
+      life: 5000,
+    })
+  } finally {
+    signingIn.value = false
   }
 }
 </script>
@@ -86,6 +105,29 @@ async function sendLink(): Promise<void> {
         <Message v-if="authState.error" severity="error" :closable="false" class="form-message">
           {{ authState.error }}
         </Message>
+        <form
+          v-if="isDevelopment && isSupabaseConfigured"
+          class="stack-form"
+          @submit.prevent="signInWithTestPassword"
+        >
+          <Divider />
+          <p class="muted">Lokale testaanmelding (niet beschikbaar op de live site)</p>
+          <label for="test-password">Testwachtwoord</label>
+          <InputText
+            id="test-password"
+            v-model="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            :disabled="signingIn"
+          />
+          <Button
+            type="submit"
+            label="Test lokaal aanmelden"
+            icon="pi pi-sign-in"
+            :loading="signingIn"
+          />
+        </form>
         <p class="privacy-note">
           <i class="pi pi-lock" aria-hidden="true"></i>
           Je e-mailadres is niet zichtbaar op de ranglijst.
