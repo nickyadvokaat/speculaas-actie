@@ -429,7 +429,8 @@ input[type='checkbox'] { accent-color: var(--forest); }
   .page-heading h1 { font-size: 29px; }
   .heading-season { font-size: 25px; }
   .hero-grid { grid-template-columns: 1fr; gap: 26px; padding: 35px 0 45px; }
-  .hero-grid::before { inset: -14px -6vw 30% -6vw; background: radial-gradient(ellipse at 38% 36%, rgb(255 250 242 / 98%) 0%, rgb(255 250 242 / 90%) 54%, rgb(255 250 242 / 0%) 100%); }
+  .hero-grid::before { inset: -14px 0 30%; background: radial-gradient(ellipse at 38% 36%, rgb(255 250 242 / 98%) 0%, rgb(255 250 242 / 90%) 54%, rgb(255 250 242 / 0%) 100%); }
+  body::before { background-size: 100% auto; }
   .hero-copy h1 { max-width: 500px; font-size: clamp(39px, 11vw, 54px); }
   .hero-description { font-size: 14px; }
   .login-card { justify-self: stretch; max-width: none; }
@@ -442,8 +443,9 @@ input[type='checkbox'] { accent-color: var(--forest); }
   .product-card > strong { font-size: 11px; }
   .content-grid { gap: 13px; }
   .wide-card .p-card-body, .commission-card .p-card-body { padding: 17px; }
-  .leaderboard-title { align-items: flex-start; }
+  .leaderboard-title { align-items: flex-start; flex-direction: column; }
   .leaderboard-title .p-button { padding: 8px; font-size: 10px; white-space: nowrap; }
+  .leaderboard-refresh { align-self: flex-start; max-width: 100%; }
   .leaderboard-row { grid-template-columns: 24px 31px minmax(70px, 1fr) 75px; gap: 8px; min-height: 59px; padding: 7px 5px; }
   .rank-avatar { width: 31px; height: 31px; }
   .rank-name { font-size: 11px; }

@@ -57,10 +57,6 @@ async function signInWithTestPassword(): Promise<void> {
         Verkoop speculaaspoppen en stroopwafels. Voer je bestellingen eenvoudig
         in en volg de opbrengst op de ranglijst.
       </p>
-      <div class="hero-pills">
-        <span><i class="pi pi-calendar" aria-hidden="true"></i> Tot 12 november 2026</span>
-        <span><i class="pi pi-mobile" aria-hidden="true"></i> Makkelijk op je telefoon</span>
-      </div>
       <div v-if="authState.user" class="welcome-card">
         <div class="welcome-icon"><i class="pi pi-check" aria-hidden="true"></i></div>
         <div>
