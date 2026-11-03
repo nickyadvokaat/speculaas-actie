@@ -2,7 +2,8 @@
 
 Mobiele bestelapp voor de jaarlijkse speculaasactie. De frontend gebruikt Vue
 3, Vue Router en PrimeVue; Supabase verzorgt magic-link-authenticatie, opslag,
-toegangsregels en de openbare ranglijst.
+toegangsregels en de openbare ranglijst. Database migrations worden vanuit
+`supabase/migrations/` met Supabase GitHub Integration beheerd.
 
 ## Lokaal starten
 
