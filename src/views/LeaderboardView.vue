@@ -56,8 +56,10 @@ onMounted(() => void load())
             :class="{ 'top-rank': index < 3 }"
           >
             <span class="rank-number">{{ String(index + 1).padStart(2, '0') }}</span>
-            <span class="rank-medal" v-if="index === 0">★</span>
-            <div class="rank-avatar">{{ entry.display_name.slice(0, 1).toUpperCase() }}</div>
+            <span class="rank-avatar-wrap">
+              <span class="rank-avatar">{{ entry.display_name.slice(0, 1).toUpperCase() }}</span>
+              <span v-if="index === 0" class="rank-medal" aria-label="Eerste plaats">★</span>
+            </span>
             <strong class="rank-name">{{ entry.display_name }}</strong>
             <div class="rank-bar"><span :style="{ width: `${Math.max(14, (Number(entry.total_cents) / Math.max(...entries.map((item) => Number(item.total_cents)))) * 100)}%` }"></span></div>
             <strong class="rank-total">{{ formatCurrency(Number(entry.total_cents)) }}</strong>

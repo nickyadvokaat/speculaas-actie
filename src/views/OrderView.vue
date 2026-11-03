@@ -12,12 +12,11 @@ import {
   PRODUCT_LIMIT,
   type ProductCounts,
 } from '../lib/pricing'
-import { authState } from '../stores/auth'
 import type { MySaleOrder } from '../types'
 
 const toast = useToast()
 const counts = reactive<ProductCounts>(emptyCounts())
-const customerName = ref(authState.profile?.display_name ?? '')
+const customerName = ref('')
 const address = ref('')
 const saving = ref(false)
 const confirmationVisible = ref(false)
@@ -125,7 +124,7 @@ async function confirmOrder(): Promise<void> {
     completedOrder.value = { buyer, totalCents: totalCents.value }
     confirmationVisible.value = false
     Object.assign(counts, emptyCounts())
-    customerName.value = authState.profile?.display_name ?? ''
+    customerName.value = ''
     address.value = ''
     await Promise.all([
       loadMySalesTotal(),
@@ -163,10 +162,10 @@ onMounted(() => void loadMySalesTotal())
               <span class="stat-label">Jouw totale verkoop</span>
               <strong v-if="mySalesTotalCents !== null">{{ formatCurrency(mySalesTotalCents) }}</strong>
               <strong v-else aria-label="Verkooptotaal laden"><i class="pi pi-spin pi-spinner" aria-hidden="true"></i></strong>
-              <small>Actieve bestellingen · tik voor je transacties</small>
+              <small>{{ salesExpanded ? 'Verberg je transacties' : 'Bekijk je transacties' }}</small>
             </span>
-            <span class="seller-total-icon">
-              <i :class="salesExpanded ? 'pi pi-chevron-up' : 'pi pi-chart-line'" aria-hidden="true"></i>
+            <span class="seller-total-action">
+              <i :class="salesExpanded ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" aria-hidden="true"></i>
             </span>
           </button>
           <div v-if="salesExpanded" id="seller-sales-history" class="sales-history">
@@ -231,7 +230,7 @@ onMounted(() => void loadMySalesTotal())
                 id="customer-name"
                 v-model="customerName"
                 maxlength="100"
-                autocomplete="name"
+                autocomplete="off"
                 placeholder="Naam van de koper"
                 required
               />
