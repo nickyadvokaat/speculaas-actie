@@ -32,6 +32,7 @@ body {
   margin: 0;
   background-color: var(--soft-bg);
   background-image: url('./assets/bg.png');
+  background-size: 50% auto;
   background-repeat: repeat;
 }
 
