@@ -44,7 +44,7 @@ body::before {
   background-image: url('./assets/bg.png');
   background-size: 50% auto;
   background-repeat: repeat;
-  opacity: .14;
+  opacity: .68;
   pointer-events: none;
 }
 
@@ -166,7 +166,7 @@ a { color: inherit; }
 .leaderboard-row:nth-child(3) .rank-avatar { background: #efddd2; color: #995d42; }
 .rank-name { font-size: 13px; }
 .rank-bar { height: 6px; overflow: hidden; border-radius: 10px; background: #e9dfd1; }
-.rank-bar span { display: block; height: 100%; min-width: 8px; border-radius: inherit; background: linear-gradient(90deg, #75472d, var(--club-green)); }
+.rank-bar span { display: block; height: 100%; min-width: 8px; border-radius: inherit; background: linear-gradient(90deg, #25834b, #4caf68); }
 .rank-total { text-align: right; color: var(--forest); font: 700 13px 'Manrope', sans-serif; white-space: nowrap; }
 .privacy-note { margin-top: 20px; }
 .side-card { padding: 22px; border: 1px solid #e7d7c2; border-radius: 16px; background: #f1e4d2; }
