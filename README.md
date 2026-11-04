@@ -89,5 +89,5 @@ verifiëren van de magic link zelf door naar hun profiel.
   afvinken zodra dit naar de club is betaald. Nieuwe verkopen na
   een aftekening worden opnieuw als openstaand bedrag getoond.
 - Verkopers bekijken hun eigen totalen en bestelgeschiedenis op de pagina
-  **Mijn verkopen**. De commissie kan een volledig verkoperspakket in één keer
-  als uitgedeeld aftekenen.
+  **Mijn bestellingen** (`/mijn-bestellingen`). De commissie kan een volledig
+  verkoperspakket in één keer als uitgedeeld aftekenen.

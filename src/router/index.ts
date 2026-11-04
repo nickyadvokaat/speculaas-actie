@@ -6,7 +6,8 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: () => import('../views/HomeView.vue') },
     { path: '/bestellen', name: 'order', component: () => import('../views/OrderView.vue'), meta: { auth: true, profile: true } },
-    { path: '/verkopen', name: 'sales', component: () => import('../views/SellerSalesView.vue'), meta: { auth: true, profile: true } },
+    { path: '/mijn-bestellingen', name: 'sales', component: () => import('../views/SellerSalesView.vue'), meta: { auth: true, profile: true } },
+    { path: '/verkopen', redirect: { name: 'sales' } },
     { path: '/hoe-werkt-het', name: 'how-it-works', component: () => import('../views/HowItWorksView.vue') },
     { path: '/ranglijst', name: 'leaderboard', component: () => import('../views/LeaderboardView.vue') },
     { path: '/profiel', name: 'profile', component: () => import('../views/ProfileView.vue'), meta: { auth: true } },

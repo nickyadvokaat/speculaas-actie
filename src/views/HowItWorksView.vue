@@ -24,7 +24,7 @@
         <span class="how-page-icon"><i class="pi pi-wallet" aria-hidden="true"></i></span>
         <p class="eyebrow">3 · Betalen</p>
         <h3>Reken af met je koper</h3>
-        <p>De koper betaalt jou. Na de deadline van 12 november ontvang je een betaalverzoek. Jij maakt het totaal van jouw verkopen in één keer over aan de club.</p>
+        <p>De koper betaalt jou. Na de deadline hoor je hoe je het totaal van jouw verkopen in één keer aan de club overmaakt.</p>
       </article>
       <article class="how-page-card">
         <span class="how-page-icon"><i class="pi pi-box" aria-hidden="true"></i></span>
@@ -39,7 +39,7 @@
         <p class="eyebrow">Handig om te weten</p>
         <h2>Betaling en voortgang</h2>
         <div class="how-payment-points">
-          <p><i class="pi pi-check-circle" aria-hidden="true"></i> Je ziet je verkooptotaal en bestelgeschiedenis bij <strong>Mijn verkopen</strong>.</p>
+          <p><i class="pi pi-check-circle" aria-hidden="true"></i> Je ziet je verkooptotaal en bestelgeschiedenis bij <strong>Mijn bestellingen</strong>.</p>
           <p><i class="pi pi-check-circle" aria-hidden="true"></i> De commissie vinkt af wanneer jouw totaal is betaald en wanneer je complete pakket is uitgedeeld.</p>
           <p><i class="pi pi-calendar" aria-hidden="true"></i> Nieuwe bestellingen invoeren kan tot en met 11 november 2026. Vanaf 12 november is de besteltermijn gesloten.</p>
           <p><i class="pi pi-lock" aria-hidden="true"></i> Kopergegevens zijn alleen zichtbaar voor de commissie.</p>

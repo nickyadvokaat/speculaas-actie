@@ -86,7 +86,7 @@ async function logout(): Promise<void> {
           @click="closeMobileMenu"
         >
           <RouterLink to="/bestellen" v-if="authState.user">Bestellen</RouterLink>
-          <RouterLink to="/verkopen" v-if="authState.user">
+          <RouterLink :to="{ name: 'sales' }" v-if="authState.user">
             Mijn bestellingen
           </RouterLink>
           <RouterLink to="/hoe-werkt-het">Hoe werkt het?</RouterLink>
