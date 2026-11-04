@@ -17,20 +17,20 @@
       <article class="how-page-card">
         <span class="how-page-icon"><i class="pi pi-shopping-bag" aria-hidden="true"></i></span>
         <p class="eyebrow">2 · Verkopen</p>
-        <h3>Noteer elke bestelling</h3>
+        <h3>Plaats je bestellingen</h3>
         <p>Kies of je zelf koopt of aan iemand verkoopt, vul de producten in en controleer het totaal. Korting wordt automatisch berekend.</p>
       </article>
       <article class="how-page-card">
         <span class="how-page-icon"><i class="pi pi-wallet" aria-hidden="true"></i></span>
         <p class="eyebrow">3 · Betalen</p>
         <h3>Reken af met je koper</h3>
-        <p>De koper betaalt jou. Daarna maak jij het totaal van jouw verkopen in één keer over aan de club, met de afgesproken betaalmethode.</p>
+        <p>De koper betaalt jou. Na de deadline van 12 november ontvang je een betaalverzoek. Jij maakt het totaal van jouw verkopen in één keer over aan de club.</p>
       </article>
       <article class="how-page-card">
         <span class="how-page-icon"><i class="pi pi-box" aria-hidden="true"></i></span>
         <p class="eyebrow">4 · Uitdelen</p>
-        <h3>Haal je complete verkoperspakket op</h3>
-        <p>De commissie verzamelt de bestellingen per verkoper. Je krijgt alles voor jouw verkopen in één keer mee.</p>
+        <h3>Haal je complete pakket op</h3>
+        <p>Je krijgt alles voor jouw verkopen in één keer mee op een training of wedstrijddag. Na de deadline wordt de bestelling bij de leverancier geplaatst, en volgt communicatie over de levering.</p>
       </article>
     </section>
 
