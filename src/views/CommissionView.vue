@@ -16,6 +16,7 @@ const sellers = ref<SellerProfile[]>([])
 const loading = ref(true)
 const search = ref('')
 const includeCancelled = ref(false)
+const expandedSellerRows = ref<Record<string, boolean>>({})
 const editVisible = ref(false)
 const editing = ref<SaleOrder | null>(null)
 const editCounts = reactive<ProductCounts>({
@@ -31,17 +32,6 @@ const updatingPaymentSellerId = ref<string | null>(null)
 const sellerNameDrafts = reactive<Record<string, string>>({})
 
 const activeOrders = computed(() => orders.value.filter((order) => !order.cancelled))
-const visibleOrders = computed(() => {
-  const term = search.value.trim().toLocaleLowerCase('nl-NL')
-  return orders.value.filter((order) => {
-    if (!includeCancelled.value && order.cancelled) return false
-    const sellerName = sellerById.value[order.seller_id]?.display_name ?? ''
-    return !term || `${order.customer_name} ${order.address ?? ''} ${sellerName}`.toLocaleLowerCase('nl-NL').includes(term)
-  })
-})
-const sellerById = computed(() =>
-  Object.fromEntries(sellers.value.map((seller) => [seller.id, seller])),
-)
 const totals = computed(() => {
   const counts = activeOrders.value.reduce<ProductCounts>(
     (sum, order) => ({
@@ -58,27 +48,38 @@ const totals = computed(() => {
     given: activeOrders.value.filter((order) => order.given).length,
   }
 })
-const sellerPayments = computed(() =>
-  sellers.value
+const sellerPayments = computed(() => {
+  const term = search.value.trim().toLocaleLowerCase('nl-NL')
+  return sellers.value
     .map((seller) => {
+      const sellerName = seller.display_name ?? ''
+      const sellerMatches = sellerName.toLocaleLowerCase('nl-NL').includes(term)
+      const sellerOrders = orders.value.filter((order) => {
+        if (order.seller_id !== seller.id || (!includeCancelled.value && order.cancelled)) return false
+        if (!term || sellerMatches) return true
+        return `${order.customer_name} ${order.address ?? ''}`
+          .toLocaleLowerCase('nl-NL')
+          .includes(term)
+      })
       const totalCents = activeOrders.value
         .filter((order) => order.seller_id === seller.id)
         .reduce((sum, order) => sum + order.total_cents, 0)
       const paidTotalCents = Number(seller.paid_total_cents)
       return {
+        id: seller.id,
         seller,
+        orders: sellerOrders,
+        orderCount: activeOrders.value.filter((order) => order.seller_id === seller.id).length,
         totalCents,
         paidTotalCents,
         outstandingCents: Math.max(totalCents - paidTotalCents, 0),
         isPaid: totalCents > 0 && paidTotalCents >= totalCents,
       }
     })
-    .filter(({ totalCents, paidTotalCents }) => totalCents > 0 || paidTotalCents > 0),
-)
-
-function sellerName(order: SaleOrder): string {
-  return sellerById.value[order.seller_id]?.display_name ?? 'Onbekende verkoper'
-}
+    .filter(({ orders: sellerOrders, totalCents, paidTotalCents }) =>
+      sellerOrders.length > 0 || totalCents > 0 || paidTotalCents > 0,
+    )
+})
 
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat('nl-NL', {
@@ -254,10 +255,10 @@ onMounted(() => void load())
         <div class="section-title table-heading">
           <div>
             <p class="eyebrow">Verwerking en uitdelen</p>
-            <h2>Bestellingen</h2>
+            <h2>Bestellingen en betalingen</h2>
           </div>
           <div class="table-controls">
-            <InputText v-model="search" placeholder="Zoek koper of verkoper" aria-label="Zoek in bestellingen" />
+            <InputText v-model="search" placeholder="Zoek verkoper of koper" aria-label="Zoek in bestellingen" />
             <Button label="Vernieuwen" icon="pi pi-refresh" severity="secondary" outlined @click="load" />
           </div>
         </div>
@@ -268,7 +269,8 @@ onMounted(() => void load())
           </label>
         </div>
         <DataTable
-          :value="visibleOrders"
+          v-model:expanded-rows="expandedSellerRows"
+          :value="sellerPayments"
           :loading="loading"
           paginator
           :rows="10"
@@ -278,109 +280,98 @@ onMounted(() => void load())
           empty-message="Nog geen bestellingen."
           class="orders-table"
         >
-          <Column field="created_at" header="Ingevoerd" sortable>
-            <template #body="{ data }">{{ formatDate(data.created_at) }}</template>
+          <Column expander style="width: 3rem" />
+          <Column header="Verkoper" sortable sort-field="seller.display_name">
+            <template #body="{ data }">{{ data.seller.display_name ?? 'Naam ontbreekt' }}</template>
           </Column>
-          <Column header="Verkoper" sortable sort-field="seller_id">
-            <template #body="{ data }">{{ sellerName(data) }}</template>
+          <Column field="orderCount" header="Bestellingen" sortable>
+            <template #body="{ data }">{{ data.orderCount }}</template>
           </Column>
-          <Column field="customer_name" header="Koper" sortable />
-          <Column field="address" header="Adres">
-            <template #body="{ data }">{{ data.address || '—' }}</template>
+          <Column field="totalCents" header="Verkooptotaal" sortable>
+            <template #body="{ data }">{{ formatCurrency(data.totalCents) }}</template>
           </Column>
-          <Column header="Bestelling">
+          <Column field="outstandingCents" header="Openstaand" sortable>
+            <template #body="{ data }">{{ formatCurrency(data.outstandingCents) }}</template>
+          </Column>
+          <Column header="Via Tikkie overgemaakt">
             <template #body="{ data }">
-              <span class="order-detail">
-                {{ data.speculaaspoppen ? `${data.speculaaspoppen} pop · ` : '' }}
-                {{ data.stroopwafels ? `${data.stroopwafels} gewoon · ` : '' }}
-                {{ data.glutenvrij ? `${data.glutenvrij} glutenvrij · ` : '' }}
-                {{ data.lactosevrij ? `${data.lactosevrij} lactosevrij` : '' }}
-              </span>
-            </template>
-          </Column>
-          <Column field="total_cents" header="Totaal" sortable>
-            <template #body="{ data }">{{ formatCurrency(data.total_cents) }}</template>
-          </Column>
-          <Column header="Korting">
-            <template #body="{ data }">
-              <span v-if="calculateDiscountCents(data) > 0" class="order-discount">
-                − {{ formatCurrency(calculateDiscountCents(data)) }}
-              </span>
-              <span v-else class="muted">—</span>
-            </template>
-          </Column>
-          <Column header="Meegegeven">
-            <template #body="{ data }">
-              <Button
-                :label="data.given ? 'Meegegeven' : 'Open'"
-                :icon="data.given ? 'pi pi-check' : 'pi pi-box'"
-                :severity="data.given ? 'success' : 'secondary'"
-                :outlined="!data.given"
-                size="small"
-                :disabled="data.cancelled"
-                @click="setGiven(data, !data.given)"
-              />
-            </template>
-          </Column>
-          <Column header="Acties">
-            <template #body="{ data }">
-              <div class="row-actions">
-                <Button icon="pi pi-pencil" text rounded severity="secondary" aria-label="Bestelling wijzigen" @click="openEdit(data)" />
-                <Button
-                  v-if="!data.cancelled"
-                  icon="pi pi-ban"
-                  text
-                  rounded
-                  severity="danger"
-                  aria-label="Bestelling annuleren"
-                  @click="cancelOrder(data)"
+              <label class="checkbox-label seller-payment-toggle">
+                <input
+                  type="checkbox"
+                  :checked="data.isPaid"
+                  :disabled="updatingPaymentSellerId !== null || data.totalCents === 0"
+                  :aria-label="data.isPaid
+                    ? `Zet betaling van ${data.seller.display_name ?? 'de verkoper'} terug op openstaand`
+                    : `Markeer betaling van ${data.seller.display_name ?? 'de verkoper'} als overgemaakt`"
+                  @change="toggleSellerPaid(data.seller, data.isPaid)"
                 />
-                <Tag v-else value="Geannuleerd" severity="danger" />
-              </div>
+                {{ data.isPaid ? 'Ja' : 'Nee' }}
+              </label>
             </template>
           </Column>
-        </DataTable>
-      </template>
-    </Card>
-
-    <Card class="commission-card seller-payments-card">
-      <template #content>
-        <div class="section-title">
-          <div>
-            <p class="eyebrow">Tikkie naar de club</p>
-            <h2>Overgemaakte verkooptotalen</h2>
-          </div>
-        </div>
-        <p class="muted">Vink per verkoper af zodra het volledige openstaande totaal via Tikkie is overgemaakt.</p>
-        <div v-if="sellerPayments.length" class="seller-payment-list">
-          <div v-for="payment in sellerPayments" :key="payment.seller.id" class="seller-payment-row">
-            <div class="seller-payment-copy">
-              <strong>{{ payment.seller.display_name ?? 'Naam ontbreekt' }}</strong>
-              <small>
-                Totaal {{ formatCurrency(payment.totalCents) }}
-                <template v-if="payment.outstandingCents > 0">
-                  · openstaand {{ formatCurrency(payment.outstandingCents) }}
-                </template>
-                <template v-else>
-                  · volledig overgemaakt
-                </template>
-              </small>
+          <template #expansion="{ data }">
+            <div class="seller-order-expansion">
+              <h3>Bestellingen van {{ data.seller.display_name ?? 'deze verkoper' }}</h3>
+              <article
+                v-for="order in data.orders"
+                :key="order.id"
+                class="seller-order-detail"
+                :class="{ 'seller-order-cancelled': order.cancelled }"
+              >
+                <div class="seller-order-main">
+                  <div class="seller-order-buyer">
+                    <strong>{{ order.customer_name }}</strong>
+                    <small>{{ formatDate(order.created_at) }}<template v-if="order.address"> · {{ order.address }}</template></small>
+                  </div>
+                  <span class="order-detail">
+                    {{ [
+                      order.speculaaspoppen && `${order.speculaaspoppen} pop`,
+                      order.stroopwafels && `${order.stroopwafels} gewoon`,
+                      order.glutenvrij && `${order.glutenvrij} glutenvrij`,
+                      order.lactosevrij && `${order.lactosevrij} lactosevrij`,
+                    ].filter(Boolean).join(' · ') }}
+                  </span>
+                  <div class="seller-order-amount">
+                    <strong>{{ formatCurrency(order.total_cents) }}</strong>
+                    <span v-if="calculateDiscountCents(order) > 0" class="order-discount">
+                      − {{ formatCurrency(calculateDiscountCents(order)) }} korting
+                    </span>
+                  </div>
+                  <div class="seller-order-actions">
+                    <Button
+                      :label="order.given ? 'Meegegeven' : 'Open'"
+                      :icon="order.given ? 'pi pi-check' : 'pi pi-box'"
+                      :severity="order.given ? 'success' : 'secondary'"
+                      :outlined="!order.given"
+                      size="small"
+                      :disabled="order.cancelled"
+                      @click="setGiven(order, !order.given)"
+                    />
+                    <Button
+                      icon="pi pi-pencil"
+                      text
+                      rounded
+                      severity="secondary"
+                      aria-label="Bestelling wijzigen"
+                      @click="openEdit(order)"
+                    />
+                    <Button
+                      v-if="!order.cancelled"
+                      icon="pi pi-ban"
+                      text
+                      rounded
+                      severity="danger"
+                      aria-label="Bestelling annuleren"
+                      @click="cancelOrder(order)"
+                    />
+                    <Tag v-else value="Geannuleerd" severity="danger" />
+                  </div>
+                </div>
+              </article>
+              <p v-if="data.orders.length === 0" class="muted">Geen bestellingen bij deze verkoper gevonden.</p>
             </div>
-            <label class="checkbox-label seller-payment-toggle">
-              <input
-                type="checkbox"
-                :checked="payment.isPaid"
-                :disabled="updatingPaymentSellerId !== null"
-                :aria-label="payment.isPaid
-                  ? `Zet betaling van ${payment.seller.display_name ?? 'de verkoper'} terug op openstaand`
-                  : `Markeer betaling van ${payment.seller.display_name ?? 'de verkoper'} als overgemaakt`"
-                @change="toggleSellerPaid(payment.seller, payment.isPaid)"
-              />
-              {{ payment.isPaid ? 'Overgemaakt' : 'Vink af' }}
-            </label>
-          </div>
-        </div>
-        <p v-else class="muted">Er zijn nog geen verkooptotalen om af te vinken.</p>
+          </template>
+        </DataTable>
       </template>
     </Card>
 

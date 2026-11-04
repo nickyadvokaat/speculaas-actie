@@ -78,7 +78,6 @@ async function logout(): Promise<void> {
             text
             @click="logout"
           />
-          <RouterLink v-else class="login-link" to="/">Inloggen</RouterLink>
         </div>
       </div>
     </header>
@@ -103,7 +102,7 @@ async function logout(): Promise<void> {
     </main>
 
     <footer class="site-footer">
-      <span>Samen in actie voor De Linge/PCG</span>
+      <span>De lekkerste clubactie</span>
       <span>Actie sluit op 12 november 2026</span>
     </footer>
     <Toast position="top-right" />

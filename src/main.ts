@@ -53,7 +53,16 @@ async function startApp(): Promise<void> {
   app.component('Textarea', Textarea)
   app.component('Toast', Toast)
   await router.isReady()
-  if (shouldOpenProfile && authState.user) await router.replace('/profiel')
+  if (shouldOpenProfile) {
+    if (authState.user && !authState.profile?.display_name) {
+      await router.replace('/profiel')
+    }
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${window.location.pathname}${window.location.hash}`,
+    )
+  }
   app.mount('#app')
 }
 
