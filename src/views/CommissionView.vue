@@ -422,19 +422,22 @@ onMounted(() => void load())
           <Card v-for="payment in sellerPayments" :key="payment.id" class="seller-mobile-card">
             <template #content>
               <div class="seller-mobile-heading">
-                <button
-                  type="button"
-                  class="seller-mobile-expand"
-                  :aria-expanded="Boolean(expandedSellerRows[payment.id])"
-                  @click="toggleSellerExpanded(payment.id)"
-                >
-                  <i :class="expandedSellerRows[payment.id] ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" aria-hidden="true"></i>
-                  <strong>{{ payment.seller.display_name ?? 'Naam ontbreekt' }}</strong>
-                </button>
-                <small>{{ payment.orderCount }} bestellingen · {{ formatCurrency(payment.totalCents) }}</small>
+                <div class="seller-mobile-identity">
+                  <button
+                    type="button"
+                    class="seller-mobile-expand"
+                    :aria-expanded="Boolean(expandedSellerRows[payment.id])"
+                    @click="toggleSellerExpanded(payment.id)"
+                  >
+                    <i :class="expandedSellerRows[payment.id] ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" aria-hidden="true"></i>
+                    <strong>{{ payment.seller.display_name ?? 'Naam ontbreekt' }}</strong>
+                  </button>
+                  <small>{{ payment.orderCount }} bestellingen</small>
+                </div>
+                <strong class="seller-mobile-total">{{ formatCurrency(payment.totalCents) }}</strong>
               </div>
               <div class="seller-mobile-controls">
-                <div>
+                <div class="seller-mobile-balance">
                   <span class="stat-label">Openstaand</span>
                   <strong>{{ formatCurrency(payment.outstandingCents) }}</strong>
                 </div>

@@ -578,6 +578,9 @@ input[type='checkbox'] { accent-color: var(--forest); }
   .stat-card .p-card-body { padding: 14px; }
   .stat-card strong { font-size: 22px; }
   .stat-card small { line-height: 1.4; }
+  .commission-page .stat-card { min-width: 0; }
+  .commission-page .stat-card .stat-label,
+  .commission-page .stat-card small { overflow-wrap: anywhere; }
   .table-heading { align-items: flex-start; flex-direction: column; }
   .table-controls { width: 100%; }
   .table-controls .p-inputtext { flex: 1; width: auto; }
@@ -586,15 +589,18 @@ input[type='checkbox'] { accent-color: var(--forest); }
   .seller-mobile-state { display: block; }
   .seller-mobile-card .p-card-body { padding: 14px; }
   .seller-mobile-card .p-card-content { display: grid; gap: 12px; padding: 0; }
-  .seller-mobile-heading { display: grid; gap: 5px; }
+  .seller-mobile-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .seller-mobile-identity { display: grid; min-width: 0; gap: 5px; }
   .seller-mobile-expand { display: flex; align-items: center; gap: 8px; padding: 0; border: 0; color: #49382b; background: transparent; text-align: left; }
-  .seller-mobile-expand strong { font: 700 14px 'Manrope', sans-serif; }
-  .seller-mobile-heading > small { color: var(--muted); font-size: 11px; }
-  .seller-mobile-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
-  .seller-mobile-controls > div { display: grid; gap: 4px; }
-  .seller-mobile-controls > div strong { color: var(--forest); font: 800 17px 'Manrope', sans-serif; }
-  .seller-mobile-checkbox { display: flex; align-items: center; gap: 6px; color: #74685b; font-size: 11px; }
-  .seller-mobile-checkbox input { width: 16px; height: 16px; accent-color: var(--forest); }
+  .seller-mobile-expand i { flex: 0 0 auto; font-size: 11px; }
+  .seller-mobile-expand strong { font: 700 14px 'Manrope', sans-serif; overflow-wrap: anywhere; }
+  .seller-mobile-identity > small { padding-left: 19px; color: var(--muted); font-size: 11px; }
+  .seller-mobile-total { flex: 0 0 auto; color: var(--forest); font: 800 16px 'Manrope', sans-serif; }
+  .seller-mobile-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .seller-mobile-balance { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 9px 10px; border-radius: 9px; background: #f7f1e8; }
+  .seller-mobile-balance strong { color: var(--forest); font: 800 16px 'Manrope', sans-serif; }
+  .seller-mobile-checkbox { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 6px; border: 1px solid var(--line); border-radius: 9px; color: #74685b; background: #fffdf9; font-size: 11px; line-height: 1.25; }
+  .seller-mobile-checkbox input { flex: 0 0 auto; width: 16px; height: 16px; margin: 0; accent-color: var(--forest); }
   .seller-mobile-orders { display: grid; gap: 10px; padding-top: 4px; }
   .seller-order-mobile-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
   .seller-order-mobile-top > strong { flex: 0 0 auto; color: #49382b; font-size: 12px; }

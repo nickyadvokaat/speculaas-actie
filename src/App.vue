@@ -13,6 +13,7 @@ const isConfigured = isSupabaseConfigured
 const baseUrl = import.meta.env.BASE_URL
 const currentTime = ref(Date.now())
 const mobileMenuOpen = ref(false)
+const siteHeader = ref<HTMLElement | null>(null)
 let deadlineTimer = 0
 const ordersClosed = computed(() => areOrdersClosed(new Date(currentTime.value)))
 const routeTitle = computed(() => {
@@ -33,9 +34,23 @@ onMounted(() => {
   deadlineTimer = window.setInterval(() => {
     currentTime.value = Date.now()
   }, 60_000)
+  document.addEventListener('pointerdown', closeMenuOnOutsideClick)
 })
 
-onUnmounted(() => window.clearInterval(deadlineTimer))
+onUnmounted(() => {
+  window.clearInterval(deadlineTimer)
+  document.removeEventListener('pointerdown', closeMenuOnOutsideClick)
+})
+
+function closeMobileMenu(): void {
+  mobileMenuOpen.value = false
+}
+
+function closeMenuOnOutsideClick(event: PointerEvent): void {
+  if (event.target instanceof Node && !siteHeader.value?.contains(event.target)) {
+    closeMobileMenu()
+  }
+}
 
 async function logout(): Promise<void> {
   try {
@@ -54,7 +69,7 @@ async function logout(): Promise<void> {
 
 <template>
   <div class="app-shell">
-    <header class="site-header">
+    <header ref="siteHeader" class="site-header">
       <div class="site-header-inner">
         <RouterLink class="brand" to="/" aria-label="De Linge/PCG actie - startpagina">
           <img class="brand-logo" :src="`${baseUrl}logo.png`" alt="" />
@@ -68,6 +83,7 @@ async function logout(): Promise<void> {
           class="main-nav"
           :class="{ 'mobile-open': mobileMenuOpen }"
           aria-label="Hoofdnavigatie"
+          @click="closeMobileMenu"
         >
           <RouterLink to="/bestellen" v-if="authState.user">Bestellen</RouterLink>
           <RouterLink to="/verkopen" v-if="authState.user">
