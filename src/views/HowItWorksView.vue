@@ -1,8 +1,6 @@
 <template>
   <div class="how-page">
     <section class="how-page-intro">
-      <p class="eyebrow">De lekkerste clubactie</p>
-      <h2>Samen verkopen, samen de club steunen</h2>
       <p>
         Met de speculaasactie verkopen we speculaaspoppen en stroopwafels.
         Hieronder lees je hoe bestellen, betalen en uitdelen werkt.

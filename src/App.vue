@@ -17,10 +17,10 @@ let deadlineTimer = 0
 const ordersClosed = computed(() => areOrdersClosed(new Date(currentTime.value)))
 const routeTitle = computed(() => {
   if (route.name === 'order') return 'Nieuwe bestelling'
-  if (route.name === 'sales') return 'Mijn verkopen'
+  if (route.name === 'sales') return 'Mijn bestellingen'
   if (route.name === 'how-it-works') return 'Hoe werkt het?'
   if (route.name === 'leaderboard') return 'Verkopersranglijst'
-  if (route.name === 'commission') return 'Verkoop overzicht'
+  if (route.name === 'commission') return 'Club totalen'
   if (route.name === 'profile') return 'Verkopersprofiel'
   return 'Clubactie 2026'
 })
@@ -71,21 +71,24 @@ async function logout(): Promise<void> {
         >
           <RouterLink to="/bestellen" v-if="authState.user">Bestellen</RouterLink>
           <RouterLink to="/verkopen" v-if="authState.user">
-            <span class="nav-label-desktop">Mijn verkopen</span>
-            <span class="nav-label-mobile">Verkopen</span>
+            Mijn bestellingen
           </RouterLink>
-          <RouterLink to="/hoe-werkt-het">
-            <span class="nav-label-desktop">Hoe werkt het?</span>
-            <span class="nav-label-mobile">Hoe werkt het?</span>
-          </RouterLink>
+          <RouterLink to="/hoe-werkt-het">Hoe werkt het?</RouterLink>
           <RouterLink to="/ranglijst">Ranglijst</RouterLink>
           <RouterLink
             to="/commissie"
             v-if="authState.profile?.role === 'admin'"
           >
-            <span class="nav-label-desktop">Verkoop overzicht</span>
-            <span class="nav-label-mobile">Verkoop</span>
+            Club totalen
           </RouterLink>
+          <button
+            v-if="authState.user"
+            type="button"
+            class="mobile-logout"
+            @click="logout"
+          >
+            Uitloggen
+          </button>
         </nav>
         <div class="header-actions">
           <span class="seller-label" v-if="authState.profile?.display_name">
@@ -93,6 +96,7 @@ async function logout(): Promise<void> {
           </span>
           <Button
             v-if="authState.user"
+            class="desktop-logout"
             label="Uitloggen"
             severity="secondary"
             text
