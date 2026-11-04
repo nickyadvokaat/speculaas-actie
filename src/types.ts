@@ -2,6 +2,7 @@ export interface SellerProfile {
   id: string
   display_name: string | null
   role: 'seller' | 'admin'
+  paid_total_cents: number | string
 }
 
 export interface LeaderboardEntry {

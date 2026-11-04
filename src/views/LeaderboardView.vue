@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { fetchLeaderboard } from '../lib/data'
 import { formatCurrency } from '../lib/pricing'
 import type { LeaderboardEntry } from '../types'
@@ -7,6 +7,20 @@ import type { LeaderboardEntry } from '../types'
 const entries = ref<LeaderboardEntry[]>([])
 const loading = ref(true)
 const errorMessage = ref('')
+const rankedEntries = computed(() => {
+  let previousTotal: number | null = null
+  let previousRank = 0
+  const ranked = entries.value.map((entry, index) => {
+    const total = Number(entry.total_cents)
+    const rank = total === previousTotal ? previousRank : index + 1
+    previousTotal = total
+    previousRank = rank
+    return { ...entry, rank }
+  })
+  const rankCounts = new Map<number, number>()
+  for (const entry of ranked) rankCounts.set(entry.rank, (rankCounts.get(entry.rank) ?? 0) + 1)
+  return ranked.map((entry) => ({ ...entry, shared: (rankCounts.get(entry.rank) ?? 0) > 1 }))
+})
 
 async function load(): Promise<void> {
   loading.value = true
@@ -50,15 +64,18 @@ onMounted(() => void load())
         </div>
         <div v-else class="leaderboard-list">
           <div
-            v-for="(entry, index) in entries"
-            :key="`${entry.display_name}-${index}`"
+            v-for="entry in rankedEntries"
+            :key="`${entry.display_name}-${entry.rank}`"
             class="leaderboard-row"
-            :class="{ 'top-rank': index < 3 }"
+            :class="{ 'top-rank': entry.rank <= 3 }"
           >
-            <span class="rank-number">{{ String(index + 1).padStart(2, '0') }}</span>
+            <span class="rank-number" :aria-label="`${entry.rank}e plaats${entry.shared ? ', gedeeld' : ''}`">
+              {{ entry.rank }}e
+              <small v-if="entry.shared">gedeeld</small>
+            </span>
             <span class="rank-avatar-wrap">
               <span class="rank-avatar">{{ entry.display_name.slice(0, 1).toUpperCase() }}</span>
-              <span v-if="index === 0" class="rank-medal" aria-label="Eerste plaats">★</span>
+              <span v-if="entry.rank === 1" class="rank-medal" aria-label="Eerste plaats">★</span>
             </span>
             <strong class="rank-name">{{ entry.display_name }}</strong>
             <div class="rank-bar"><span :style="{ width: `${Math.max(14, (Number(entry.total_cents) / Math.max(...entries.map((item) => Number(item.total_cents)))) * 100)}%` }"></span></div>

@@ -52,7 +52,7 @@ export async function fetchCommissionData(): Promise<{
   const client = requireSupabase()
   const [ordersResult, sellersResult] = await Promise.all([
     client.from('orders').select('*').order('created_at', { ascending: false }),
-    client.from('profiles').select('id, display_name, role').order('display_name'),
+    client.from('profiles').select('id, display_name, role, paid_total_cents').order('display_name'),
   ])
   if (ordersResult.error) throw ordersResult.error
   if (sellersResult.error) throw sellersResult.error
@@ -94,4 +94,15 @@ export async function updateSellerName(
     .update({ display_name: displayName.trim() })
     .eq('id', id)
   if (error) throw error
+}
+
+export async function setSellerPaid(sellerId: string, paid: boolean): Promise<number> {
+  const { data, error } = await requireSupabase().rpc('set_seller_paid', {
+    p_seller_id: sellerId,
+    p_paid: paid,
+  })
+  if (error) throw error
+  const total = Number(data)
+  if (!Number.isFinite(total)) throw new Error('Het betaalde totaal kon niet worden verwerkt.')
+  return total
 }

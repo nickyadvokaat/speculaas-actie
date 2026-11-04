@@ -11,6 +11,8 @@ toegangsregels en de openbare ranglijst. Database migrations worden vanuit
 2. Installeer dependencies met `npm ci`.
 3. Maak in Supabase een project en voer
    `supabase/migrations/202611030001_initial_schema.sql` uit via de SQL Editor.
+   Voer daarna ook de overige migraties in `supabase/migrations/` op volgorde
+   uit.
 4. Kopieer `.env.example` naar `.env.local` en vul de Supabase Project URL en
    de publieke anon/publishable key in.
 5. Voeg de lokale URL (bijvoorbeeld `http://localhost:5173/**`) toe aan de
@@ -72,7 +74,8 @@ verifiëren van de magic link zelf door naar hun profiel.
 - Gewone stroopwafels: 1 voor € 3,30 of 3 voor € 9,00. Glutenvrij en
   lactosevrij tellen samen voor 3 voor € 12,50; resterende pakjes kosten
   € 4,60 per stuk.
-- Er is geen betaalverwerking of registratie van betaalstatus.
+- De app verwerkt geen betalingen; de commissie registreert alleen of het
+  verkooptotaal van een verkoper naar de club is overgemaakt.
 - De top drie op basis van totale verkoopopbrengst wint cadeaubonnen van
   respectievelijk € 25, € 15 en € 10.
 - Verkopers kunnen hun eigen bestelgeschiedenis bekijken. Deze afgeschermde
@@ -80,3 +83,8 @@ verifiëren van de magic link zelf door naar hun profiel.
 - De commissie krijgt toegang na toekenning van de `admin`-rol. De pagina
   ondersteunt totalen, wijzigen/annuleren, naamcorrecties en aftekenen als
   meegegeven.
+- Nieuwe bestellingen worden vanaf 12 november 2026 geblokkeerd, zowel in de
+  app als in de database.
+- De commissie kan per verkoper het volledige openstaande verkooptotaal
+  afvinken zodra dit via Tikkie naar de club is overgemaakt. Nieuwe verkopen na
+  een aftekening worden opnieuw als openstaand bedrag getoond.

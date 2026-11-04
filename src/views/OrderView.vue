@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { fetchMySalesOrders, fetchMySalesTotal, submitOrder } from '../lib/data'
+import { areOrdersClosed } from '../lib/campaign'
+import { authState } from '../stores/auth'
 import {
   calculateDiscountCents,
   calculateTotalCents,
@@ -16,6 +18,7 @@ import type { MySaleOrder } from '../types'
 
 const toast = useToast()
 const counts = reactive<ProductCounts>(emptyCounts())
+const purchaseMode = ref<'self' | 'customer' | null>(null)
 const customerName = ref('')
 const address = ref('')
 const saving = ref(false)
@@ -27,6 +30,9 @@ const mySalesOrders = ref<MySaleOrder[]>([])
 const salesExpanded = ref(false)
 const salesLoading = ref(false)
 const completedOrder = ref<{ buyer: string; totalCents: number } | null>(null)
+const currentTime = ref(Date.now())
+let deadlineTimer = 0
+const ordersClosed = computed(() => areOrdersClosed(new Date(currentTime.value)))
 const totalCents = computed(() => calculateTotalCents(counts))
 const discountCents = computed(() => calculateDiscountCents(counts))
 const specialWaffleCount = computed(() => counts.glutenvrij + counts.lactosevrij)
@@ -113,21 +119,28 @@ function formatDate(value: string): string {
 }
 
 function requestOrderConfirmation(): void {
-  if (customerName.value.trim() && orderIsValid.value) {
+  if (!ordersClosed.value && customerName.value.trim() && orderIsValid.value) {
     paymentConfirmed.value = false
     confirmationVisible.value = true
   }
 }
 
+function setPurchaseMode(mode: 'self' | 'customer'): void {
+  purchaseMode.value = mode
+  customerName.value = mode === 'self' ? authState.profile?.display_name ?? '' : ''
+  address.value = ''
+}
+
 async function confirmOrder(): Promise<void> {
   const buyer = customerName.value.trim()
-  if (!buyer || !orderIsValid.value || !paymentConfirmed.value) return
+  if (ordersClosed.value || !buyer || !orderIsValid.value || !paymentConfirmed.value) return
   saving.value = true
   try {
     await submitOrder(buyer, address.value, counts)
     completedOrder.value = { buyer, totalCents: totalCents.value }
     confirmationVisible.value = false
     Object.assign(counts, emptyCounts())
+    purchaseMode.value = null
     customerName.value = ''
     address.value = ''
     await Promise.all([
@@ -147,7 +160,14 @@ async function confirmOrder(): Promise<void> {
   }
 }
 
-onMounted(() => void loadMySalesTotal())
+onMounted(() => {
+  deadlineTimer = window.setInterval(() => {
+    currentTime.value = Date.now()
+  }, 60_000)
+  void loadMySalesTotal()
+})
+
+onUnmounted(() => window.clearInterval(deadlineTimer))
 </script>
 
 <template>
@@ -221,13 +241,56 @@ onMounted(() => void loadMySalesTotal())
           </div>
         </template>
       </Card>
+      <Message v-if="ordersClosed" severity="warn" :closable="false">
+        Nieuwe bestellingen invoeren is sinds 12 november 2026 gesloten.
+      </Message>
       <Card class="buyer-card">
         <template #title>
           <span class="step-number">1</span>
-          Gegevens van de koper
+          Voor wie is deze bestelling?
         </template>
         <template #content>
-          <div class="form-grid">
+          <div class="purchase-mode-options">
+            <label class="purchase-mode-option" :class="{ selected: purchaseMode === 'self' }">
+              <input
+                type="radio"
+                name="purchase-mode"
+                :checked="purchaseMode === 'self'"
+                :disabled="ordersClosed"
+                @change="setPurchaseMode('self')"
+              />
+              <span>
+                <strong>Ik koop zelf</strong>
+                <small>Gebruik mijn ranglijstnaam: {{ authState.profile?.display_name }}</small>
+              </span>
+            </label>
+            <label class="purchase-mode-option" :class="{ selected: purchaseMode === 'customer' }">
+              <input
+                type="radio"
+                name="purchase-mode"
+                :checked="purchaseMode === 'customer'"
+                :disabled="ordersClosed"
+                @change="setPurchaseMode('customer')"
+              />
+              <span>
+                <strong>Ik verkoop aan iemand</strong>
+                <small>Vul de naam van de koper in</small>
+              </span>
+            </label>
+          </div>
+        </template>
+      </Card>
+
+      <Card v-if="purchaseMode" class="buyer-card">
+        <template #title>
+          <span class="step-number">2</span>
+          {{ purchaseMode === 'self' ? 'Jouw bestelling' : 'Gegevens van de koper' }}
+        </template>
+        <template #content>
+          <p v-if="purchaseMode === 'self'" class="muted self-purchase-name">
+            Bestelling op naam van <strong>{{ customerName }}</strong>.
+          </p>
+          <div v-else class="form-grid">
             <div class="field">
               <label for="customer-name">Naam koper <span class="required">*</span></label>
               <InputText
@@ -237,6 +300,7 @@ onMounted(() => void loadMySalesTotal())
                 autocomplete="off"
                 placeholder="Naam van de koper"
                 required
+                :disabled="ordersClosed"
               />
             </div>
             <div class="field">
@@ -247,19 +311,20 @@ onMounted(() => void loadMySalesTotal())
                 maxlength="250"
                 autocomplete="street-address"
                 placeholder="Straat en huisnummer"
+                :disabled="ordersClosed"
               />
             </div>
           </div>
           <p class="privacy-note">
             <i class="pi pi-lock" aria-hidden="true"></i>
-            Kopergegevens zijn alleen zichtbaar voor de commissie.
+            Bestelgegevens zijn alleen zichtbaar voor de commissie.
           </p>
         </template>
       </Card>
 
-      <Card class="products-card">
+      <Card v-if="purchaseMode" class="products-card">
         <template #title>
-          <span class="step-number">2</span>
+          <span class="step-number">3</span>
           Kies de producten
         </template>
         <template #content>
@@ -282,6 +347,7 @@ onMounted(() => void loadMySalesTotal())
                   :max="PRODUCT_LIMIT"
                   :min-fraction-digits="0"
                   :max-fraction-digits="0"
+                  :disabled="ordersClosed"
                   show-buttons
                   button-layout="horizontal"
                   increment-button-icon="pi pi-plus"
@@ -304,6 +370,7 @@ onMounted(() => void loadMySalesTotal())
         <template #title>Overzicht</template>
         <template #content>
           <div class="summary-lines">
+            <p v-if="!purchaseMode" class="muted">Kies eerst voor wie deze bestelling is.</p>
             <div v-if="counts.speculaaspoppen"><span>{{ counts.speculaaspoppen }} × speculaaspop</span><strong>{{ formatCurrency(counts.speculaaspoppen * 700) }}</strong></div>
             <div v-if="counts.stroopwafels"><span>{{ counts.stroopwafels }} × gewoon stroopwafelpakje</span><strong>{{ formatCurrency(Math.floor(counts.stroopwafels / 3) * 900 + (counts.stroopwafels % 3) * 330) }}</strong></div>
             <div v-if="specialWaffleCount"><span>{{ counts.glutenvrij }} glutenvrij · {{ counts.lactosevrij }} lactosevrij</span><strong>{{ formatCurrency(specialWaffleTotal) }}</strong></div>
@@ -326,11 +393,11 @@ onMounted(() => void loadMySalesTotal())
             icon="pi pi-arrow-right"
             icon-pos="right"
             class="submit-order"
-            :disabled="!customerName.trim() || !orderIsValid"
+            :disabled="ordersClosed || !purchaseMode || !customerName.trim() || !orderIsValid"
             @click="requestOrderConfirmation"
           />
           <p class="muted tiny-note">
-            Betaling regel je buiten deze app. Er wordt geen betaalstatus opgeslagen.
+            Regel de betaling met de koper en maak jouw verkooptotaal daarna in één keer met Tikkie over naar de club.
           </p>
         </template>
       </Card>

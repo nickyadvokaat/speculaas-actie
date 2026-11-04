@@ -69,7 +69,7 @@ export async function refreshProfile(): Promise<void> {
 
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, display_name, role')
+    .select('id, display_name, role, paid_total_cents')
     .eq('id', authState.user.id)
     .maybeSingle()
 

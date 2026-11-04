@@ -143,6 +143,38 @@ async function signInWithTestPassword(): Promise<void> {
     </div>
   </section>
 
+  <section class="how-it-works">
+    <div class="section-title">
+      <div>
+        <p class="eyebrow">Van verkoop tot overmaken</p>
+        <h2>Zo werkt de actie</h2>
+      </div>
+    </div>
+    <div class="how-it-works-steps">
+      <article>
+        <span>1</span>
+        <div>
+          <h3>Meld je aan</h3>
+          <p>Log in met je e-maillink en kies je naam voor de ranglijst.</p>
+        </div>
+      </article>
+      <article>
+        <span>2</span>
+        <div>
+          <h3>Verkoop en noteer</h3>
+          <p>Leg elke bestelling vast, voor jezelf of voor een koper. Zo blijft het totaal overzichtelijk.</p>
+        </div>
+      </article>
+      <article>
+        <span>3</span>
+        <div>
+          <h3>Maak het totaal over</h3>
+          <p>Regel de betaling met je kopers en maak jouw verkooptotaal in één keer met Tikkie over naar de club.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <section class="product-intro">
     <div class="section-title">
       <div>

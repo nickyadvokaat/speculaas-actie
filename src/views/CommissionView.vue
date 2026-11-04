@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { fetchCommissionData, updateOrder, updateSellerName } from '../lib/data'
+import { fetchCommissionData, setSellerPaid, updateOrder, updateSellerName } from '../lib/data'
 import {
   calculateDiscountCents,
   calculateTotalCents,
@@ -27,6 +27,7 @@ const editCounts = reactive<ProductCounts>({
 const editBuyer = ref('')
 const editAddress = ref('')
 const saving = ref(false)
+const updatingPaymentSellerId = ref<string | null>(null)
 const sellerNameDrafts = reactive<Record<string, string>>({})
 
 const activeOrders = computed(() => orders.value.filter((order) => !order.cancelled))
@@ -57,6 +58,23 @@ const totals = computed(() => {
     given: activeOrders.value.filter((order) => order.given).length,
   }
 })
+const sellerPayments = computed(() =>
+  sellers.value
+    .map((seller) => {
+      const totalCents = activeOrders.value
+        .filter((order) => order.seller_id === seller.id)
+        .reduce((sum, order) => sum + order.total_cents, 0)
+      const paidTotalCents = Number(seller.paid_total_cents)
+      return {
+        seller,
+        totalCents,
+        paidTotalCents,
+        outstandingCents: Math.max(totalCents - paidTotalCents, 0),
+        isPaid: totalCents > 0 && paidTotalCents >= totalCents,
+      }
+    })
+    .filter(({ totalCents, paidTotalCents }) => totalCents > 0 || paidTotalCents > 0),
+)
 
 function sellerName(order: SaleOrder): string {
   return sellerById.value[order.seller_id]?.display_name ?? 'Onbekende verkoper'
@@ -171,6 +189,27 @@ async function saveSellerName(seller: SellerProfile): Promise<void> {
       detail: error instanceof Error ? error.message : 'Probeer het opnieuw.',
       life: 5000,
     })
+  }
+}
+
+async function toggleSellerPaid(seller: SellerProfile, isPaid: boolean): Promise<void> {
+  updatingPaymentSellerId.value = seller.id
+  try {
+    seller.paid_total_cents = await setSellerPaid(seller.id, !isPaid)
+    toast.add({
+      severity: 'success',
+      summary: isPaid ? 'Betaling weer opengezet' : 'Totaal als overgemaakt afgevinkt',
+      life: 3500,
+    })
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Betaling niet bijgewerkt',
+      detail: error instanceof Error ? error.message : 'Probeer het opnieuw.',
+      life: 5000,
+    })
+  } finally {
+    updatingPaymentSellerId.value = null
   }
 }
 
@@ -301,6 +340,47 @@ onMounted(() => void load())
             </template>
           </Column>
         </DataTable>
+      </template>
+    </Card>
+
+    <Card class="commission-card seller-payments-card">
+      <template #content>
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Tikkie naar de club</p>
+            <h2>Overgemaakte verkooptotalen</h2>
+          </div>
+        </div>
+        <p class="muted">Vink per verkoper af zodra het volledige openstaande totaal via Tikkie is overgemaakt.</p>
+        <div v-if="sellerPayments.length" class="seller-payment-list">
+          <div v-for="payment in sellerPayments" :key="payment.seller.id" class="seller-payment-row">
+            <div class="seller-payment-copy">
+              <strong>{{ payment.seller.display_name ?? 'Naam ontbreekt' }}</strong>
+              <small>
+                Totaal {{ formatCurrency(payment.totalCents) }}
+                <template v-if="payment.outstandingCents > 0">
+                  · openstaand {{ formatCurrency(payment.outstandingCents) }}
+                </template>
+                <template v-else>
+                  · volledig overgemaakt
+                </template>
+              </small>
+            </div>
+            <label class="checkbox-label seller-payment-toggle">
+              <input
+                type="checkbox"
+                :checked="payment.isPaid"
+                :disabled="updatingPaymentSellerId !== null"
+                :aria-label="payment.isPaid
+                  ? `Zet betaling van ${payment.seller.display_name ?? 'de verkoper'} terug op openstaand`
+                  : `Markeer betaling van ${payment.seller.display_name ?? 'de verkoper'} als overgemaakt`"
+                @change="toggleSellerPaid(payment.seller, payment.isPaid)"
+              />
+              {{ payment.isPaid ? 'Overgemaakt' : 'Vink af' }}
+            </label>
+          </div>
+        </div>
+        <p v-else class="muted">Er zijn nog geen verkooptotalen om af te vinken.</p>
       </template>
     </Card>
 

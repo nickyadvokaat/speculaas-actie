@@ -6,17 +6,20 @@ export type Database = {
           id: string
           display_name: string | null
           role: 'seller' | 'admin'
+          paid_total_cents: number
           created_at: string
         }
         Insert: {
           id: string
           display_name?: string | null
           role?: 'seller' | 'admin'
+          paid_total_cents?: number
           created_at?: string
         }
         Update: {
           display_name?: string | null
           role?: 'seller' | 'admin'
+          paid_total_cents?: number
           created_at?: string
         }
         Relationships: []
@@ -92,6 +95,13 @@ export type Database = {
       is_commission_member: {
         Args: Record<string, never>
         Returns: boolean
+      }
+      set_seller_paid: {
+        Args: {
+          p_seller_id: string
+          p_paid: boolean
+        }
+        Returns: number
       }
       submit_order: {
         Args: {
