@@ -12,7 +12,7 @@ toegangsregels en de openbare ranglijst. Database migrations worden vanuit
 3. Maak in Supabase een project en voer
    `supabase/migrations/202611030001_initial_schema.sql` uit via de SQL Editor.
    Voer daarna ook de overige migraties in `supabase/migrations/` op volgorde
-   uit.
+   uit, inclusief de migratie voor pakket-uitdeling.
 4. Kopieer `.env.example` naar `.env.local` en vul de Supabase Project URL en
    de publieke anon/publishable key in.
 5. Voeg de lokale URL (bijvoorbeeld `http://localhost:5173/**`) toe aan de
@@ -81,10 +81,13 @@ verifiëren van de magic link zelf door naar hun profiel.
 - Verkopers kunnen hun eigen bestelgeschiedenis bekijken. Deze afgeschermde
   weergave bevat geen koperadressen en is niet beschikbaar voor andere verkopers.
 - De commissie krijgt toegang na toekenning van de `admin`-rol. De pagina
-  ondersteunt totalen, wijzigen/annuleren, naamcorrecties en aftekenen als
-  meegegeven.
+  ondersteunt totalen, wijzigen/annuleren, ranglijstnaamcorrecties en
+  aftekenen als betaald of uitgedeeld.
 - Nieuwe bestellingen worden vanaf 12 november 2026 geblokkeerd, zowel in de
   app als in de database.
 - De commissie kan per verkoper het volledige openstaande verkooptotaal
-  afvinken zodra dit via Tikkie naar de club is overgemaakt. Nieuwe verkopen na
+  afvinken zodra dit naar de club is betaald. Nieuwe verkopen na
   een aftekening worden opnieuw als openstaand bedrag getoond.
+- Verkopers bekijken hun eigen totalen en bestelgeschiedenis op de pagina
+  **Mijn verkopen**. De commissie kan een volledig verkoperspakket in één keer
+  als uitgedeeld aftekenen.

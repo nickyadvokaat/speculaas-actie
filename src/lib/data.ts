@@ -106,3 +106,16 @@ export async function setSellerPaid(sellerId: string, paid: boolean): Promise<nu
   if (!Number.isFinite(total)) throw new Error('Het betaalde totaal kon niet worden verwerkt.')
   return total
 }
+
+export async function setSellerOrdersGiven(sellerId: string, given: boolean): Promise<number> {
+  const { data, error } = await requireSupabase().rpc('set_seller_orders_given', {
+    p_seller_id: sellerId,
+    p_given: given,
+  })
+  if (error) throw error
+  const count = Number(data)
+  if (!Number.isInteger(count) || count < 0) {
+    throw new Error('Het aantal afgetekende bestellingen kon niet worden verwerkt.')
+  }
+  return count
+}

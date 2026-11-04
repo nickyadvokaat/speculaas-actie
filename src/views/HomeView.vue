@@ -169,7 +169,7 @@ async function signInWithTestPassword(): Promise<void> {
         <span>3</span>
         <div>
           <h3>Maak het totaal over</h3>
-          <p>Regel de betaling met je kopers en maak jouw verkooptotaal in één keer met Tikkie over naar de club.</p>
+          <p>Regel de betaling met je kopers en maak jouw verkooptotaal in één keer over naar de club.</p>
         </div>
       </article>
     </div>

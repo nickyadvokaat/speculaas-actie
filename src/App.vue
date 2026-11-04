@@ -16,6 +16,7 @@ let deadlineTimer = 0
 const ordersClosed = computed(() => areOrdersClosed(new Date(currentTime.value)))
 const routeTitle = computed(() => {
   if (route.name === 'order') return 'Nieuwe bestelling'
+  if (route.name === 'sales') return 'Mijn verkopen'
   if (route.name === 'leaderboard') return 'Verkopersranglijst'
   if (route.name === 'commission') return 'Verkoop overzicht'
   if (route.name === 'profile') return 'Verkopersprofiel'
@@ -58,6 +59,10 @@ async function logout(): Promise<void> {
         </RouterLink>
         <nav class="main-nav" aria-label="Hoofdnavigatie">
           <RouterLink to="/bestellen" v-if="authState.user">Bestellen</RouterLink>
+          <RouterLink to="/verkopen" v-if="authState.user">
+            <span class="nav-label-desktop">Mijn verkopen</span>
+            <span class="nav-label-mobile">Verkopen</span>
+          </RouterLink>
           <RouterLink to="/ranglijst">Ranglijst</RouterLink>
           <RouterLink
             to="/commissie"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { fetchMySalesOrders, fetchMySalesTotal, submitOrder } from '../lib/data'
+import { submitOrder } from '../lib/data'
 import { areOrdersClosed } from '../lib/campaign'
 import { authState } from '../stores/auth'
 import {
@@ -14,7 +14,6 @@ import {
   PRODUCT_LIMIT,
   type ProductCounts,
 } from '../lib/pricing'
-import type { MySaleOrder } from '../types'
 
 const toast = useToast()
 const counts = reactive<ProductCounts>(emptyCounts())
@@ -25,10 +24,6 @@ const saving = ref(false)
 const confirmationVisible = ref(false)
 const paymentConfirmed = ref(false)
 const successVisible = ref(false)
-const mySalesTotalCents = ref<number | null>(null)
-const mySalesOrders = ref<MySaleOrder[]>([])
-const salesExpanded = ref(false)
-const salesLoading = ref(false)
 const completedOrder = ref<{ buyer: string; totalCents: number } | null>(null)
 const currentTime = ref(Date.now())
 let deadlineTimer = 0
@@ -75,49 +70,6 @@ const productGroups = [
 
 const baseUrl = import.meta.env.BASE_URL
 
-async function loadMySalesTotal(): Promise<void> {
-  try {
-    mySalesTotalCents.value = await fetchMySalesTotal()
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Verkooptotaal niet geladen',
-      detail: error instanceof Error ? error.message : 'Controleer je verbinding en probeer opnieuw.',
-      life: 5000,
-    })
-  }
-}
-
-async function loadMySalesOrders(): Promise<void> {
-  salesLoading.value = true
-  try {
-    mySalesOrders.value = await fetchMySalesOrders()
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Je transacties niet geladen',
-      detail: error instanceof Error ? error.message : 'Controleer je verbinding en probeer opnieuw.',
-      life: 5000,
-    })
-  } finally {
-    salesLoading.value = false
-  }
-}
-
-async function toggleSales(): Promise<void> {
-  salesExpanded.value = !salesExpanded.value
-  if (salesExpanded.value) {
-    await Promise.all([loadMySalesOrders(), loadMySalesTotal()])
-  }
-}
-
-function formatDate(value: string): string {
-  return new Intl.DateTimeFormat('nl-NL', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value))
-}
-
 function requestOrderConfirmation(): void {
   if (!ordersClosed.value && customerName.value.trim() && orderIsValid.value) {
     paymentConfirmed.value = false
@@ -143,10 +95,6 @@ async function confirmOrder(): Promise<void> {
     purchaseMode.value = null
     customerName.value = ''
     address.value = ''
-    await Promise.all([
-      loadMySalesTotal(),
-      ...(salesExpanded.value ? [loadMySalesOrders()] : []),
-    ])
     successVisible.value = true
   } catch (error) {
     toast.add({
@@ -164,7 +112,6 @@ onMounted(() => {
   deadlineTimer = window.setInterval(() => {
     currentTime.value = Date.now()
   }, 60_000)
-  void loadMySalesTotal()
 })
 
 onUnmounted(() => window.clearInterval(deadlineTimer))
@@ -173,74 +120,6 @@ onUnmounted(() => window.clearInterval(deadlineTimer))
 <template>
   <div class="order-layout">
     <form class="order-form" @submit.prevent="requestOrderConfirmation">
-      <Card class="seller-total-card" :class="{ 'sales-expanded': salesExpanded }">
-        <template #content>
-          <button
-            type="button"
-            class="seller-total-toggle"
-            :aria-expanded="salesExpanded"
-            aria-controls="seller-sales-history"
-            @click="toggleSales"
-          >
-            <span class="seller-total-copy">
-              <span class="stat-label">Jouw totale verkoop</span>
-              <strong v-if="mySalesTotalCents !== null">{{ formatCurrency(mySalesTotalCents) }}</strong>
-              <strong v-else aria-label="Verkooptotaal laden"><i class="pi pi-spin pi-spinner" aria-hidden="true"></i></strong>
-              <small>{{ salesExpanded ? 'Verberg je transacties' : 'Bekijk je transacties' }}</small>
-            </span>
-            <span class="seller-total-action">
-              <i :class="salesExpanded ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" aria-hidden="true"></i>
-            </span>
-          </button>
-          <div v-if="salesExpanded" id="seller-sales-history" class="sales-history">
-            <div class="sales-history-heading">
-              <strong>Jouw transacties</strong>
-              <Button
-                type="button"
-                icon="pi pi-refresh"
-                text
-                rounded
-                severity="secondary"
-                aria-label="Transacties vernieuwen"
-                :loading="salesLoading"
-                @click="loadMySalesOrders"
-              />
-            </div>
-            <div v-if="salesLoading" class="sales-history-state">
-              <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Transacties laden…
-            </div>
-            <div v-else-if="mySalesOrders.length === 0" class="sales-history-state">
-              Je hebt nog geen bestellingen ingevoerd.
-            </div>
-            <div v-else class="sales-history-list">
-              <article
-                v-for="order in mySalesOrders"
-                :key="order.id"
-                class="sales-history-order"
-                :class="{ 'sales-history-cancelled': order.cancelled }"
-              >
-                <div class="sales-order-heading">
-                  <strong>{{ order.customer_name }}</strong>
-                  <Tag v-if="order.cancelled" value="Geannuleerd" severity="danger" />
-                  <strong v-else class="sales-order-total">{{ formatCurrency(order.total_cents) }}</strong>
-                </div>
-                <small>{{ formatDate(order.created_at) }}</small>
-                <p>
-                  {{ [
-                    order.speculaaspoppen && `${order.speculaaspoppen} speculaaspop(pen)`,
-                    order.stroopwafels && `${order.stroopwafels} gewoon`,
-                    order.glutenvrij && `${order.glutenvrij} glutenvrij`,
-                    order.lactosevrij && `${order.lactosevrij} lactosevrij`,
-                  ].filter(Boolean).join(' · ') }}
-                </p>
-                <strong v-if="order.cancelled" class="cancelled-order-total">
-                  {{ formatCurrency(order.total_cents) }}
-                </strong>
-              </article>
-            </div>
-          </div>
-        </template>
-      </Card>
       <Message v-if="ordersClosed" severity="warn" :closable="false">
         Nieuwe bestellingen invoeren is sinds 12 november 2026 gesloten.
       </Message>
@@ -397,7 +276,7 @@ onUnmounted(() => window.clearInterval(deadlineTimer))
             @click="requestOrderConfirmation"
           />
           <p class="muted tiny-note">
-            Regel de betaling met de koper en maak jouw verkooptotaal daarna in één keer met Tikkie over naar de club.
+            Regel de betaling met de koper en maak jouw verkooptotaal daarna in één keer over naar de club.
           </p>
         </template>
       </Card>

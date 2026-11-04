@@ -103,6 +103,13 @@ export type Database = {
         }
         Returns: number
       }
+      set_seller_orders_given: {
+        Args: {
+          p_seller_id: string
+          p_given: boolean
+        }
+        Returns: number
+      }
       submit_order: {
         Args: {
           p_customer_name: string

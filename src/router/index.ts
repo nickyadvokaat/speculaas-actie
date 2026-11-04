@@ -6,6 +6,7 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: () => import('../views/HomeView.vue') },
     { path: '/bestellen', name: 'order', component: () => import('../views/OrderView.vue'), meta: { auth: true, profile: true } },
+    { path: '/verkopen', name: 'sales', component: () => import('../views/SellerSalesView.vue'), meta: { auth: true, profile: true } },
     { path: '/ranglijst', name: 'leaderboard', component: () => import('../views/LeaderboardView.vue') },
     { path: '/profiel', name: 'profile', component: () => import('../views/ProfileView.vue'), meta: { auth: true } },
     { path: '/commissie', name: 'commission', component: () => import('../views/CommissionView.vue'), meta: { auth: true, admin: true } },
