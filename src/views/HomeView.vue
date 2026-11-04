@@ -173,6 +173,9 @@ async function signInWithTestPassword(): Promise<void> {
         </div>
       </article>
     </div>
+    <RouterLink class="text-action how-details-link" to="/hoe-werkt-het">
+      Lees hoe betalen en uitdelen werkt <i class="pi pi-arrow-right" aria-hidden="true"></i>
+    </RouterLink>
   </section>
 
   <section class="product-intro">

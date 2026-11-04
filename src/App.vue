@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { authState, signOut } from './stores/auth'
 import { useToast } from 'primevue/usetoast'
@@ -12,15 +12,21 @@ const toast = useToast()
 const isConfigured = isSupabaseConfigured
 const baseUrl = import.meta.env.BASE_URL
 const currentTime = ref(Date.now())
+const mobileMenuOpen = ref(false)
 let deadlineTimer = 0
 const ordersClosed = computed(() => areOrdersClosed(new Date(currentTime.value)))
 const routeTitle = computed(() => {
   if (route.name === 'order') return 'Nieuwe bestelling'
   if (route.name === 'sales') return 'Mijn verkopen'
+  if (route.name === 'how-it-works') return 'Hoe werkt het?'
   if (route.name === 'leaderboard') return 'Verkopersranglijst'
   if (route.name === 'commission') return 'Verkoop overzicht'
   if (route.name === 'profile') return 'Verkopersprofiel'
   return 'Clubactie 2026'
+})
+
+watch(() => route.fullPath, () => {
+  mobileMenuOpen.value = false
 })
 
 onMounted(() => {
@@ -57,11 +63,20 @@ async function logout(): Promise<void> {
             <small>Speculaasactie</small>
           </span>
         </RouterLink>
-        <nav class="main-nav" aria-label="Hoofdnavigatie">
+        <nav
+          id="main-navigation"
+          class="main-nav"
+          :class="{ 'mobile-open': mobileMenuOpen }"
+          aria-label="Hoofdnavigatie"
+        >
           <RouterLink to="/bestellen" v-if="authState.user">Bestellen</RouterLink>
           <RouterLink to="/verkopen" v-if="authState.user">
             <span class="nav-label-desktop">Mijn verkopen</span>
             <span class="nav-label-mobile">Verkopen</span>
+          </RouterLink>
+          <RouterLink to="/hoe-werkt-het">
+            <span class="nav-label-desktop">Hoe werkt het?</span>
+            <span class="nav-label-mobile">Hoe werkt het?</span>
           </RouterLink>
           <RouterLink to="/ranglijst">Ranglijst</RouterLink>
           <RouterLink
@@ -84,6 +99,16 @@ async function logout(): Promise<void> {
             @click="logout"
           />
         </div>
+        <button
+          type="button"
+          class="mobile-menu-toggle"
+          aria-controls="main-navigation"
+          :aria-expanded="mobileMenuOpen"
+          :aria-label="mobileMenuOpen ? 'Menu sluiten' : 'Menu openen'"
+          @click="mobileMenuOpen = !mobileMenuOpen"
+        >
+          <i :class="mobileMenuOpen ? 'pi pi-times' : 'pi pi-bars'" aria-hidden="true"></i>
+        </button>
       </div>
     </header>
 

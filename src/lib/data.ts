@@ -73,7 +73,6 @@ export async function updateOrder(
       | 'stroopwafels'
       | 'glutenvrij'
       | 'lactosevrij'
-      | 'given'
       | 'cancelled'
     >
   >,

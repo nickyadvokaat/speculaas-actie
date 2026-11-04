@@ -127,20 +127,6 @@ async function load(): Promise<void> {
   }
 }
 
-async function setGiven(order: SaleOrder, given: boolean): Promise<void> {
-  try {
-    await updateOrder(order.id, { given })
-    order.given = given
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Aftekenen mislukt',
-      detail: error instanceof Error ? error.message : 'Probeer het opnieuw.',
-      life: 5000,
-    })
-  }
-}
-
 async function setSellerDelivered(sellerId: string, given: boolean): Promise<void> {
   updatingPaymentSellerId.value = sellerId
   try {
@@ -289,7 +275,7 @@ onMounted(() => void load())
       </Card>
       <Card class="stat-card">
         <template #content>
-          <span class="stat-label">Verkoperspakketten uitgedeeld</span>
+          <span class="stat-label">Verkopers met alles uitgedeeld</span>
           <strong>{{ totals.given }}<small class="stat-denominator"> / {{ sellerDeliveryStats.sellerCount }}</small></strong>
           <small>verkopers met minstens één bestelling</small>
         </template>
@@ -349,14 +335,14 @@ onMounted(() => void load())
                   :disabled="updatingPaymentSellerId !== null || data.totalCents === 0"
                   :aria-label="data.isPaid
                     ? `Zet betaling van ${data.seller.display_name ?? 'de verkoper'} terug op openstaand`
-                    : `Markeer betaling van ${data.seller.display_name ?? 'de verkoper'} als overgemaakt`"
+                    : `Markeer betaling van ${data.seller.display_name ?? 'de verkoper'} als betaald`"
                   @change="toggleSellerPaid(data.seller, data.isPaid)"
                 />
                 {{ data.isPaid ? 'Ja' : 'Nee' }}
               </label>
             </template>
           </Column>
-          <Column header="Pakket uitgedeeld">
+          <Column header="Alles uitgedeeld">
             <template #body="{ data }">
               <label class="checkbox-label seller-payment-toggle">
                 <input
@@ -364,8 +350,8 @@ onMounted(() => void load())
                   :checked="data.delivered"
                   :disabled="updatingPaymentSellerId !== null || data.orderCount === 0"
                   :aria-label="data.delivered
-                    ? `Zet uitdelen van ${data.seller.display_name ?? 'de verkoper'} terug op openstaand`
-                    : `Markeer pakket van ${data.seller.display_name ?? 'de verkoper'} als uitgedeeld`"
+                    ? `Zet uitdelen voor ${data.seller.display_name ?? 'de verkoper'} terug op openstaand`
+                    : `Markeer dat alles voor ${data.seller.display_name ?? 'de verkoper'} is uitgedeeld`"
                   @change="setSellerDelivered(data.seller.id, !data.delivered)"
                 />
                 {{ data.delivered ? 'Ja' : 'Nee' }}
@@ -401,15 +387,6 @@ onMounted(() => void load())
                     </span>
                   </div>
                   <div class="seller-order-actions">
-                    <Button
-                      :label="order.given ? 'Meegegeven' : 'Open'"
-                      :icon="order.given ? 'pi pi-check' : 'pi pi-box'"
-                      :severity="order.given ? 'success' : 'secondary'"
-                      :outlined="!order.given"
-                      size="small"
-                      :disabled="order.cancelled"
-                      @click="setGiven(order, !order.given)"
-                    />
                     <Button
                       icon="pi pi-pencil"
                       text
@@ -477,7 +454,7 @@ onMounted(() => void load())
                     :disabled="updatingPaymentSellerId !== null || payment.orderCount === 0"
                     @change="setSellerDelivered(payment.seller.id, !payment.delivered)"
                   />
-                  Pakket uitgedeeld
+                  Alles uitgedeeld
                 </label>
               </div>
               <div v-if="expandedSellerRows[payment.id]" class="seller-mobile-orders">
@@ -503,15 +480,6 @@ onMounted(() => void load())
                     ].filter(Boolean).join(' · ') }}
                   </span>
                   <div class="seller-order-actions">
-                    <Button
-                      :label="order.given ? 'Meegegeven' : 'Open'"
-                      :icon="order.given ? 'pi pi-check' : 'pi pi-box'"
-                      :severity="order.given ? 'success' : 'secondary'"
-                      :outlined="!order.given"
-                      size="small"
-                      :disabled="order.cancelled"
-                      @click="setGiven(order, !order.given)"
-                    />
                     <Button
                       icon="pi pi-pencil"
                       text

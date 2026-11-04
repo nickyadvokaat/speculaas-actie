@@ -82,7 +82,7 @@ verifiëren van de magic link zelf door naar hun profiel.
   weergave bevat geen koperadressen en is niet beschikbaar voor andere verkopers.
 - De commissie krijgt toegang na toekenning van de `admin`-rol. De pagina
   ondersteunt totalen, wijzigen/annuleren, ranglijstnaamcorrecties en
-  aftekenen als betaald of uitgedeeld.
+  betalingen aftekenen. Uitdelen wordt per verkoper als geheel geregistreerd.
 - Nieuwe bestellingen worden vanaf 12 november 2026 geblokkeerd, zowel in de
   app als in de database.
 - De commissie kan per verkoper het volledige openstaande verkooptotaal
