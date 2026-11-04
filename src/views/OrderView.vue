@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { submitOrder } from '../lib/data'
+import { fetchLeaderboard, submitOrder } from '../lib/data'
 import { areOrdersClosed } from '../lib/campaign'
+import { rankLeaderboardEntries } from '../lib/leaderboard'
 import { authState } from '../stores/auth'
 import {
   calculateDiscountCents,
@@ -24,7 +25,13 @@ const saving = ref(false)
 const confirmationVisible = ref(false)
 const paymentConfirmed = ref(false)
 const successVisible = ref(false)
-const completedOrder = ref<{ buyer: string; totalCents: number } | null>(null)
+const completedOrder = ref<{
+  buyer: string
+  totalCents: number
+  rank: number | null
+  sharedRank: boolean
+  rankUnavailable: boolean
+} | null>(null)
 const currentTime = ref(Date.now())
 let deadlineTimer = 0
 const ordersClosed = computed(() => areOrdersClosed(new Date(currentTime.value)))
@@ -89,7 +96,19 @@ async function confirmOrder(): Promise<void> {
   saving.value = true
   try {
     await submitOrder(buyer, address.value, counts)
-    completedOrder.value = { buyer, totalCents: totalCents.value }
+    let rank: number | null = null
+    let sharedRank = false
+    let rankUnavailable = false
+    try {
+      const entries = rankLeaderboardEntries(await fetchLeaderboard())
+      const sellerEntry = entries.find((entry) => entry.display_name === authState.profile?.display_name)
+      rank = sellerEntry?.rank ?? null
+      sharedRank = sellerEntry?.shared ?? false
+      rankUnavailable = sellerEntry === undefined
+    } catch {
+      rankUnavailable = true
+    }
+    completedOrder.value = { buyer, totalCents: totalCents.value, rank, sharedRank, rankUnavailable }
     confirmationVisible.value = false
     Object.assign(counts, emptyCounts())
     purchaseMode.value = null
@@ -343,7 +362,14 @@ onUnmounted(() => window.clearInterval(deadlineTimer))
       <h2>Bestelling opgeslagen</h2>
       <p>De verkoop van <strong>{{ completedOrder?.buyer }}</strong> is toegevoegd.</p>
       <div class="success-amount">{{ completedOrder ? formatCurrency(completedOrder.totalCents) : '' }}</div>
-      <p class="muted">Je verkooptotaal en de tussenstand zijn bijgewerkt.</p>
+      <p v-if="completedOrder?.rank" class="success-rank">
+        Je staat nu op de <strong>{{ completedOrder.rank }}e plaats</strong> op de ranglijst.
+        <span v-if="completedOrder.sharedRank">Deze plaats deel je met andere verkopers.</span>
+      </p>
+      <p v-else-if="completedOrder?.rankUnavailable" class="muted">
+        Je bestelling is opgeslagen, maar je ranglijstpositie kon niet worden opgehaald.
+      </p>
+      <p v-else class="muted">Je ranglijstpositie is nog niet beschikbaar.</p>
       <Button label="Verder met bestellen" icon="pi pi-arrow-right" icon-pos="right" @click="successVisible = false" />
     </div>
   </Dialog>

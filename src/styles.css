@@ -345,6 +345,8 @@ input[type='checkbox'] { accent-color: var(--forest); }
 .order-success-content h2 { margin: 6px 0; color: #3e2e22; font: 800 23px 'Manrope', sans-serif; letter-spacing: -.04em; }
 .order-success-content > p:not(.eyebrow) { margin: 5px 0; color: #66584b; font-size: 12px; }
 .success-amount { margin: 7px 0; color: var(--forest); font: 800 27px 'Manrope', sans-serif; }
+.order-success-content .success-rank { display: grid; gap: 4px; margin: 8px 0; padding: 11px 15px; border-radius: 12px; color: var(--forest); background: var(--forest-soft); font-size: 13px; line-height: 1.45; }
+.success-rank strong { font: 800 15px 'Manrope', sans-serif; }
 .order-success-content .p-button { width: 100%; justify-content: center; margin-top: 14px; }
 .p-dialog { border: 1px solid var(--line); background: var(--paper); box-shadow: 0 20px 60px rgb(79 53 31 / 18%); }
 .success-animation { position: relative; width: 90px; height: 90px; display: grid; place-items: center; }
