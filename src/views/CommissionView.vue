@@ -555,7 +555,7 @@ onMounted(() => void load())
         <div class="dialog-total">
           Nieuw totaal: <strong>{{ formatCurrency(calculateTotalCents(editCounts)) }}</strong>
         </div>
-        <p class="muted tiny-note">De database controleert opnieuw de aantallen en het maximum van € 150.</p>
+        <p class="muted tiny-note">De database controleert opnieuw de aantallen en het maximum van € 200.</p>
         <div class="dialog-actions">
           <Button type="button" label="Annuleren" severity="secondary" text @click="editVisible = false" />
           <Button type="submit" label="Wijzigingen opslaan" icon="pi pi-check" :loading="saving" :disabled="!editBuyer.trim()" />

@@ -1,5 +1,5 @@
 export const PRODUCT_LIMIT = 20
-export const ORDER_LIMIT_CENTS = 15_000
+export const ORDER_LIMIT_CENTS = 20_000
 
 export interface ProductCounts {
   speculaaspoppen: number
