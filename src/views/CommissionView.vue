@@ -547,10 +547,10 @@ onMounted(() => void load())
           <InputText id="edit-address" v-model="editAddress" maxlength="250" />
         </div>
         <div class="edit-count-grid">
-          <div class="field"><label for="edit-pop">Speculaaspoppen</label><InputNumber input-id="edit-pop" v-model="editCounts.speculaaspoppen" :min="0" :max="20" show-buttons /></div>
-          <div class="field"><label for="edit-regular">Gewone pakjes</label><InputNumber input-id="edit-regular" v-model="editCounts.stroopwafels" :min="0" :max="20" show-buttons /></div>
-          <div class="field"><label for="edit-gluten">Glutenvrije pakjes</label><InputNumber input-id="edit-gluten" v-model="editCounts.glutenvrij" :min="0" :max="20" show-buttons /></div>
-          <div class="field"><label for="edit-lactose">Lactosevrije pakjes</label><InputNumber input-id="edit-lactose" v-model="editCounts.lactosevrij" :min="0" :max="20" show-buttons /></div>
+          <div class="field"><label for="edit-pop">Speculaaspoppen</label><InputNumber input-id="edit-pop" v-model="editCounts.speculaaspoppen" :min="0" :max="50" show-buttons /></div>
+          <div class="field"><label for="edit-regular">Gewone pakjes</label><InputNumber input-id="edit-regular" v-model="editCounts.stroopwafels" :min="0" :max="50" show-buttons /></div>
+          <div class="field"><label for="edit-gluten">Glutenvrije pakjes</label><InputNumber input-id="edit-gluten" v-model="editCounts.glutenvrij" :min="0" :max="50" show-buttons /></div>
+          <div class="field"><label for="edit-lactose">Lactosevrije pakjes</label><InputNumber input-id="edit-lactose" v-model="editCounts.lactosevrij" :min="0" :max="50" show-buttons /></div>
         </div>
         <div class="dialog-total">
           Nieuw totaal: <strong>{{ formatCurrency(calculateTotalCents(editCounts)) }}</strong>

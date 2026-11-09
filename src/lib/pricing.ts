@@ -1,4 +1,4 @@
-export const PRODUCT_LIMIT = 20
+export const PRODUCT_LIMIT = 50
 export const ORDER_LIMIT_CENTS = 20_000
 
 export interface ProductCounts {
