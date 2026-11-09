@@ -306,8 +306,8 @@ onMounted(() => void load())
           :value="sellerPayments"
           :loading="loading"
           paginator
-          :rows="10"
-          :rows-per-page-options="[10, 25, 50]"
+          :rows="100"
+          :rows-per-page-options="[100, 250, 500]"
           striped-rows
           responsive-layout="scroll"
           empty-message="Nog geen bestellingen."
