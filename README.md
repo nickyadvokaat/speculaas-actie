@@ -69,7 +69,7 @@ verifiëren van de magic link zelf door naar hun profiel.
 - Verkopers melden zich eenmalig per browser aan via een magic link en kiezen
   een voornaam of bijnaam voor de ranglijst.
 - De database valideert de bestelling opnieuw: maximaal 50 per product en
-  maximaal € 200 per order. Deze grenzen staan in de migratie en vereisen een
+  maximaal € 300 per order. Deze grenzen staan in de migratie en vereisen een
   code-/migratiewijziging om ze aan te passen.
 - Gewone stroopwafels: 1 voor € 3,30 of 3 voor € 9,00. Glutenvrij en
   lactosevrij tellen samen voor 3 voor € 12,50; resterende pakjes kosten
