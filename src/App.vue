@@ -138,7 +138,7 @@ async function logout(): Promise<void> {
       bestellingen opslaan werken.
     </div>
     <div v-else-if="ordersClosed" class="deadline-notice">
-      Nieuwe bestellingen invoeren is sinds 12 november 2026 gesloten.
+      Nieuwe bestellingen invoeren is sinds zondag 15 november 2026 om 12.00 uur gesloten.
     </div>
 
     <main class="page-content">
@@ -153,7 +153,7 @@ async function logout(): Promise<void> {
 
     <footer class="site-footer">
       <span>De lekkerste clubactie</span>
-      <span>Actie sluit op 12 november 2026</span>
+      <span>Bestellen kan tot zondag 15 november 2026 om 12.00 uur</span>
     </footer>
     <Toast position="top-right" />
   </div>

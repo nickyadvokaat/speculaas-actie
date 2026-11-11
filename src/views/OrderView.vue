@@ -140,7 +140,7 @@ onUnmounted(() => window.clearInterval(deadlineTimer))
   <div class="order-layout">
     <form class="order-form" @submit.prevent="requestOrderConfirmation">
       <Message v-if="ordersClosed" severity="warn" :closable="false">
-        Nieuwe bestellingen invoeren is sinds 12 november 2026 gesloten.
+        Nieuwe bestellingen invoeren is sinds zondag 15 november 2026 om 12.00 uur gesloten.
       </Message>
       <Card class="buyer-card">
         <template #title>

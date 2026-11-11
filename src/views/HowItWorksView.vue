@@ -41,7 +41,7 @@
         <div class="how-payment-points">
           <p><i class="pi pi-check-circle" aria-hidden="true"></i> Je ziet je verkooptotaal en bestelgeschiedenis bij <strong>Mijn bestellingen</strong>.</p>
           <p><i class="pi pi-check-circle" aria-hidden="true"></i> De commissie vinkt af wanneer jouw totaal is betaald en wanneer je complete pakket is uitgedeeld.</p>
-          <p><i class="pi pi-calendar" aria-hidden="true"></i> Nieuwe bestellingen invoeren kan tot en met 11 november 2026. Vanaf 12 november is de besteltermijn gesloten.</p>
+          <p><i class="pi pi-calendar" aria-hidden="true"></i> Nieuwe bestellingen invoeren kan tot zondag 15 november 2026 om 12.00 uur.</p>
           <p><i class="pi pi-lock" aria-hidden="true"></i> Kopergegevens zijn alleen zichtbaar voor de commissie.</p>
         </div>
       </template>
