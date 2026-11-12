@@ -83,8 +83,8 @@ verifiëren van de magic link zelf door naar hun profiel.
 - De commissie krijgt toegang na toekenning van de `admin`-rol. De pagina
   ondersteunt totalen, wijzigen/annuleren, ranglijstnaamcorrecties en
   betalingen aftekenen. Uitdelen wordt per verkoper als geheel geregistreerd.
-- Nieuwe bestellingen worden vanaf 12 november 2026 geblokkeerd, zowel in de
-  app als in de database.
+- Nieuwe bestellingen worden vanaf zondag 15 november 2026 om 12.00 uur
+  geblokkeerd, zowel in de app als in de database.
 - De commissie kan per verkoper het volledige openstaande verkooptotaal
   afvinken zodra dit naar de club is betaald. Nieuwe verkopen na
   een aftekening worden opnieuw als openstaand bedrag getoond.
