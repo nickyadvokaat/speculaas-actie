@@ -137,8 +137,10 @@ async function logout(): Promise<void> {
       De Supabase-koppeling moet nog worden ingesteld voordat aanmelden en
       bestellingen opslaan werken.
     </div>
-    <div v-else-if="ordersClosed" class="deadline-notice">
-      Nieuwe bestellingen invoeren is sinds zondag 15 november 2026 om 12.00 uur gesloten.
+    <div v-else class="deadline-notice">
+      <i class="pi pi-calendar" aria-hidden="true"></i>
+      <span v-if="ordersClosed">De besteltermijn is gesloten sinds zondag 15 november 2026 om 12.00 uur.</span>
+      <span v-else>Goed nieuws: de besteltermijn is verlengd. Bestellen kan tot en met zondag 15 november om 12.00 uur.</span>
     </div>
 
     <main class="page-content">

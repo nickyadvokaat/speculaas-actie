@@ -106,7 +106,7 @@ h1, h2, h3, h4, h5, h6 { color: #3e2e22; }
 .eyebrow { margin: 0; color: var(--forest); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .setup-notice, .deadline-notice { display: flex; align-items: center; gap: 10px; padding: 11px 24px; font-size: 13px; }
 .setup-notice { color: #735516; background: #fff2d6; }
-.deadline-notice { color: #814b08; background: #fff2d6; }
+.deadline-notice { color: #245c39; background: #e8f4e9; }
 
 .hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(340px, .75fr); align-items: center; gap: 62px; padding: 48px 0 76px; }
 .hero-grid::before { position: absolute; z-index: 0; inset: -18px 34% -22px -8vw; content: ''; background: radial-gradient(ellipse at 30% 45%, rgb(255 250 242 / 97%) 0%, rgb(255 250 242 / 88%) 48%, rgb(255 250 242 / 0%) 100%); pointer-events: none; }
