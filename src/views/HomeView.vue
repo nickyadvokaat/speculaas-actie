@@ -54,16 +54,15 @@ async function signInWithTestPassword(): Promise<void> {
       <p class="eyebrow">Een warme actie voor onze club</p>
       <h1>De lekkerste manier om <span>De Linge/PCG</span> te steunen.</h1>
       <p class="hero-description">
-        Verkoop speculaaspoppen en stroopwafels. Voer je bestellingen eenvoudig
-        in en volg de opbrengst op de ranglijst.
+        Bedankt voor je inzet! Bekijk je bestellingen en volg de opbrengst op de ranglijst.
       </p>
       <div v-if="authState.user" class="welcome-card">
         <div class="welcome-icon"><i class="pi pi-check" aria-hidden="true"></i></div>
         <div>
           <strong>Welkom{{ authState.profile?.display_name ? `, ${authState.profile.display_name}` : '' }}!</strong>
-          <p>Je bent aangemeld. Je kunt nu bestellingen invoeren.</p>
+          <p>Je bent aangemeld. Bekijk je bestellingen en betaalstatus.</p>
         </div>
-        <RouterLink class="text-action" to="/bestellen">Bestellen <i class="pi pi-arrow-right" aria-hidden="true"></i></RouterLink>
+        <RouterLink class="text-action" to="/mijn-bestellingen">Mijn bestellingen <i class="pi pi-arrow-right" aria-hidden="true"></i></RouterLink>
       </div>
     </div>
 
@@ -161,8 +160,8 @@ async function signInWithTestPassword(): Promise<void> {
       <article>
         <span>2</span>
         <div>
-          <h3>Verkoop en noteer</h3>
-          <p>Leg elke bestelling vast, voor jezelf of voor een koper. Zo blijft het totaal overzichtelijk.</p>
+          <h3>Bekijk je bestellingen</h3>
+          <p>Je bestellingen en het totaalbedrag staan bij Mijn bestellingen.</p>
         </div>
       </article>
       <article>

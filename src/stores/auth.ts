@@ -78,6 +78,7 @@ export async function refreshProfile(): Promise<void> {
     authState.profileLoaded = true
     return
   }
+  authState.error = null
   authState.profile = data
   authState.profileLoaded = true
 }

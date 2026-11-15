@@ -36,6 +36,7 @@ export type Database = {
           lactosevrij: number
           total_cents: number
           given: boolean
+          delivered_to_customer: boolean
           cancelled: boolean
           created_at: string
         }
@@ -50,6 +51,7 @@ export type Database = {
           lactosevrij?: number
           total_cents?: number
           given?: boolean
+          delivered_to_customer?: boolean
           cancelled?: boolean
           created_at?: string
         }
@@ -61,6 +63,7 @@ export type Database = {
           glutenvrij?: number
           lactosevrij?: number
           given?: boolean
+          delivered_to_customer?: boolean
           cancelled?: boolean
         }
         Relationships: []
@@ -91,6 +94,14 @@ export type Database = {
           total_cents: number
           cancelled: boolean
         }[]
+      }
+      get_my_order_delivery: {
+        Args: Record<string, never>
+        Returns: { order_id: string; package_given: boolean; delivered_to_customer: boolean }[]
+      }
+      set_my_order_delivered: {
+        Args: { p_order_id: string; p_delivered: boolean }
+        Returns: undefined
       }
       is_commission_member: {
         Args: Record<string, never>

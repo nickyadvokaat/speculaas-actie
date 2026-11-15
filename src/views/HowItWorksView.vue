@@ -17,20 +17,20 @@
       <article class="how-page-card">
         <span class="how-page-icon"><i class="pi pi-shopping-bag" aria-hidden="true"></i></span>
         <p class="eyebrow">2 · Verkopen</p>
-        <h3>Plaats je bestellingen</h3>
-        <p>Kies of je zelf koopt of aan iemand verkoopt, vul de producten in en controleer het totaal. Korting wordt automatisch berekend.</p>
+        <h3>Bekijk je bestellingen</h3>
+        <p>De besteltermijn is gesloten. Je vindt je bestellingen bij Mijn bestellingen.</p>
       </article>
       <article class="how-page-card">
         <span class="how-page-icon"><i class="pi pi-wallet" aria-hidden="true"></i></span>
         <p class="eyebrow">3 · Betalen</p>
         <h3>Reken af met je koper</h3>
-        <p>De koper betaalt jou. Na de deadline hoor je hoe je het totaal van jouw verkopen in één keer aan de club overmaakt.</p>
+        <p>Je rekent zelf af met je kopers en betaalt je totaal uiterlijk zondag 22 november in één keer aan de club via het betaalverzoek bij Mijn bestellingen.</p>
       </article>
       <article class="how-page-card">
         <span class="how-page-icon"><i class="pi pi-box" aria-hidden="true"></i></span>
         <p class="eyebrow">4 · Uitdelen</p>
         <h3>Haal je complete pakket op</h3>
-        <p>Je krijgt alles voor jouw verkopen in één keer mee op een training of wedstrijddag. Na de deadline wordt de bestelling bij de leverancier geplaatst, en volgt communicatie over de levering.</p>
+        <p>Je krijgt alles voor jouw verkopen in één keer mee op een training of wedstrijddag. Daarna kun je per bestelling afvinken dat je deze aan de koper hebt uitgedeeld.</p>
       </article>
     </section>
 
@@ -41,14 +41,14 @@
         <div class="how-payment-points">
           <p><i class="pi pi-check-circle" aria-hidden="true"></i> Je ziet je verkooptotaal en bestelgeschiedenis bij <strong>Mijn bestellingen</strong>.</p>
           <p><i class="pi pi-check-circle" aria-hidden="true"></i> De commissie vinkt af wanneer jouw totaal is betaald en wanneer je complete pakket is uitgedeeld.</p>
-          <p><i class="pi pi-calendar" aria-hidden="true"></i> Nieuwe bestellingen invoeren kan tot zondag 15 november 2026 om 15.00 uur.</p>
-          <p><i class="pi pi-lock" aria-hidden="true"></i> Kopergegevens zijn alleen zichtbaar voor de commissie.</p>
+          <p><i class="pi pi-calendar" aria-hidden="true"></i> De besteltermijn is gesloten.</p>
+          <p><i class="pi pi-lock" aria-hidden="true"></i> Bestellingen zijn zichtbaar voor de verkoper en de commissie.</p>
         </div>
       </template>
     </Card>
 
     <div class="how-page-actions">
-      <RouterLink class="text-action" to="/bestellen">Bestelling invoeren <i class="pi pi-arrow-right" aria-hidden="true"></i></RouterLink>
+      <RouterLink class="text-action" to="/mijn-bestellingen">Mijn bestellingen <i class="pi pi-arrow-right" aria-hidden="true"></i></RouterLink>
       <RouterLink class="text-action" to="/ranglijst">Bekijk de ranglijst <i class="pi pi-arrow-right" aria-hidden="true"></i></RouterLink>
     </div>
   </div>

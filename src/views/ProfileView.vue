@@ -21,7 +21,7 @@ async function saveProfile(): Promise<void> {
       detail: 'Je bestellingen worden vanaf nu automatisch aan deze naam gekoppeld.',
       life: 4000,
     })
-    await router.push('/bestellen')
+    await router.push(authState.profile?.role === 'admin' ? '/commissie' : '/mijn-bestellingen')
   } catch (error) {
     toast.add({
       severity: 'error',

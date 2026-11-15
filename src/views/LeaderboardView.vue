@@ -102,11 +102,11 @@ onMounted(() => void load())
     </Card>
     <aside class="side-card">
       <div class="side-icon"><i class="pi pi-bolt" aria-hidden="true"></i></div>
-      <p class="eyebrow">Elke verkoop telt</p>
-      <h3>Doe mee en help de club vooruit.</h3>
-      <p>Jouw inzet maakt deze actie een succes. De tussenstand wordt direct bijgewerkt.</p>
-      <RouterLink class="text-action" to="/bestellen">
-        Bestelling invoeren <i class="pi pi-arrow-right" aria-hidden="true"></i>
+      <p class="eyebrow">Bedankt voor je inzet</p>
+      <h3>Samen helpen we de club vooruit.</h3>
+      <p>Bekijk je bestellingen en betaalstatus in jouw overzicht.</p>
+      <RouterLink class="text-action" to="/mijn-bestellingen">
+        Mijn bestellingen <i class="pi pi-arrow-right" aria-hidden="true"></i>
       </RouterLink>
     </aside>
   </div>

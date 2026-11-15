@@ -5,7 +5,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: '/', name: 'home', component: () => import('../views/HomeView.vue') },
-    { path: '/bestellen', name: 'order', component: () => import('../views/OrderView.vue'), meta: { auth: true, profile: true } },
+    { path: '/bestellen', redirect: { name: 'sales' } },
     { path: '/mijn-bestellingen', name: 'sales', component: () => import('../views/SellerSalesView.vue'), meta: { auth: true, profile: true } },
     { path: '/verkopen', redirect: { name: 'sales' } },
     { path: '/hoe-werkt-het', name: 'how-it-works', component: () => import('../views/HowItWorksView.vue') },
@@ -23,11 +23,13 @@ router.beforeEach(async (to) => {
   if (authState.user && !authState.profileLoaded) await refreshProfile()
   if (to.name === 'home' && authState.user) {
     return authState.profile?.display_name
-      ? { name: 'order' }
+      ? { name: authState.profile.role === 'admin' ? 'commission' : 'sales' }
       : { name: 'profile' }
   }
   if (to.meta.auth && !authState.user) return { name: 'home' }
-  if (to.name === 'profile' && authState.profile?.display_name) return { name: 'order' }
+  if (to.name === 'profile' && authState.profile?.display_name) {
+    return { name: authState.profile.role === 'admin' ? 'commission' : 'sales' }
+  }
   if (to.meta.profile && !authState.profile?.display_name) return { name: 'profile' }
   if (to.meta.admin && authState.profile?.role !== 'admin') return { name: 'home' }
   return true

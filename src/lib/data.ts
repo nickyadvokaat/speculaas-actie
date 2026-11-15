@@ -27,6 +27,20 @@ export async function fetchMySalesOrders(): Promise<MySaleOrder[]> {
   return data ?? []
 }
 
+export async function fetchMyOrderDelivery() {
+  const { data, error } = await requireSupabase().rpc('get_my_order_delivery')
+  if (error) throw error
+  return data ?? []
+}
+
+export async function setMyOrderDelivered(orderId: string, delivered: boolean): Promise<void> {
+  const { error } = await requireSupabase().rpc('set_my_order_delivered', {
+    p_order_id: orderId,
+    p_delivered: delivered,
+  })
+  if (error) throw error
+}
+
 export async function submitOrder(
   customerName: string,
   address: string,
