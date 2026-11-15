@@ -139,8 +139,8 @@ async function logout(): Promise<void> {
     </div>
     <div v-else class="deadline-notice">
       <i class="pi pi-calendar" aria-hidden="true"></i>
-      <span v-if="ordersClosed">De besteltermijn is gesloten sinds zondag 15 november 2026 om 12.00 uur.</span>
-      <span v-else>Goed nieuws: de besteltermijn is verlengd. Bestellen kan tot en met zondag 15 november om 12.00 uur.</span>
+      <span v-if="ordersClosed">De besteltermijn is gesloten sinds zondag 15 november 2026 om 15.00 uur.</span>
+      <span v-else>Goed nieuws: de besteltermijn is verlengd. Bestellen kan tot en met zondag 15 november om 15.00 uur.</span>
     </div>
 
     <main class="page-content">
@@ -155,7 +155,7 @@ async function logout(): Promise<void> {
 
     <footer class="site-footer">
       <span>De lekkerste clubactie</span>
-      <span>Bestellen kan tot zondag 15 november 2026 om 12.00 uur</span>
+      <span>Bestellen kan tot zondag 15 november 2026 om 15.00 uur</span>
     </footer>
     <Toast position="top-right" />
   </div>
